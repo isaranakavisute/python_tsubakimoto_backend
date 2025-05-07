@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from flaskext.mysql import MySQL
+#from flaskext.mysql import MySQL
 import mysql.connector.pooling
 from datetime import datetime
 
