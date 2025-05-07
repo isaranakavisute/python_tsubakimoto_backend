@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 #from flaskext.mysql import MySQL
 import mysql.connector.pooling
 from datetime import datetime
+import pytz
 
 
 # mysql = MySQL()
@@ -65,7 +66,7 @@ def get_masterdata_upload():
     app.logger.info(file);
     app.logger.info("uploaded file name : "+file.filename)
     print(request.files);
-    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
     
