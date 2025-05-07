@@ -36,6 +36,7 @@ def hello_world():
 
 @app.route('/test_db', methods=['GET'])
 def get_test_db():
+    app.logger.info('logging /test_db')
     conn = connection_pool.get_connection()
     cursor = conn.cursor()
     cursor.execute('select * from exchange_rate')
