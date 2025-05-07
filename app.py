@@ -28,8 +28,8 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     user="isara",
     password="1234",
     host="localhost",
-    port=3306,
-    database="akt1"
+    port=3306,  #3307
+    database="akt1" #tsubakimoto
 )
 
 @app.route('/')
@@ -121,4 +121,5 @@ def delete_item(item_id):
     return '', 204
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
