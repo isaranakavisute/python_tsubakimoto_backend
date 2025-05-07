@@ -65,7 +65,7 @@ def get_masterdata_upload():
     app.logger.info(file);
     app.logger.info("uploaded file name : "+file.filename)
     print(request.files);
-    newpath = 'uploaded_files/' + onlyfilename  + '_' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '.' + onlyfileext;
+    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
     
