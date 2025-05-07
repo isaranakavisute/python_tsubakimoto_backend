@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 import mysql.connector.pooling
+from datetime import datetime
+
 
 # mysql = MySQL()
 
@@ -36,13 +38,47 @@ def hello_world():
 
 @app.route('/test_db', methods=['GET'])
 def get_test_db():
-    app.logger.info('logging /test_db')
+    app.logger.info('/test_db')
     conn = connection_pool.get_connection()
     cursor = conn.cursor()
     cursor.execute('select * from exchange_rate')
     data = cursor.fetchall()
     cursor.close()
     conn.close() 
+    return jsonify(data)
+
+@app.route('/master_data/upload', methods=['POST'])
+def get_masterdata_upload():
+    app.logger.info('/master_data/upload')
+    
+    # conn = connection_pool.get_connection()
+    # cursor = conn.cursor()
+    # cursor.execute('select * from exchange_rate')
+    # data = cursor.fetchall()
+    # cursor.close()
+    # conn.close() 
+    
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfileext = fullfilename.split('.')[1];
+    app.logger.info(file);
+    app.logger.info("uploaded file name : "+file.filename)
+    print(request.files);
+    newpath = 'uploaded_files/' + onlyfilename  + '_' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '.' + onlyfileext;
+    app.logger.info("uploaded new file path : "+newpath)
+    file.save(newpath)
+    
+    
+    data = { 
+             "status":"true",
+             "upload_excel":
+                   {
+                    "result": "pass",
+                    "full uploaded file path": newpath
+                   }
+           } 
+    
     return jsonify(data)
     
 # In-memory data store
