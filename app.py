@@ -29,7 +29,7 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     password="1234",
     host="localhost",
     port=3306,  #3307
-    database="akt1" #tsubakimoto
+    database="akt1" #tsubakimoto test
 )
 
 @app.route('/')
