@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 import mysql.connector.pooling
 from datetime import datetime
 import pytz
+import openpyxl 
+import asyncio
 
 
 # mysql = MySQL()
@@ -49,77 +51,111 @@ def get_test_db():
     return jsonify(data)
 
 @app.route('/master_data/upload', methods=['POST'])
-def get_masterdata_upload():
+async def get_masterdata_upload():
     app.logger.info('/master_data/upload')
     
-    # conn = connection_pool.get_connection()
-    # cursor = conn.cursor()
-    # cursor.execute('select * from exchange_rate')
-    # data = cursor.fetchall()
-    # cursor.close()
-    # conn.close() 
+    #request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
     
+    # upload file
     file = request.files['file']
     fullfilename = file.filename
     onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ','_')
     onlyfileext = fullfilename.split('.')[1];
-    app.logger.info(file);
-    app.logger.info("uploaded file name : "+file.filename)
     print(request.files);
     newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
     
+    # parse file
+    wb = openpyxl.load_workbook(newpath,data_only=True)
+    ws = wb.active
+    print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
+    for row in range(5, ws.max_row+1):
+        sql="insert into master_tsubakimoto(category,part_no,previous_model_no,new_model_no,unit,manufacturer_suggested_retail_price,new_manufacturer_suggested_retail_price,conversion_to_ft,diff_for_cost,op_price,po_price_jpy_usd,po_price_currency,remark,thb_cost,gp,pricelist_name,multiplier,make_same_price_as_standard_price,new_make_same_price_as_standard_price,standard_price,diff,dist_pl_mull,dist_ex_rate,unit_price,new_unit_price,diff_unit_price,status,supplier_name,stock_reference,cutting_assembly,detail)";
+        sql += " values (";
+        for column in range(1, ws.max_column+1):
+            val = ws.cell(row,column).value
+            if val is str:
+                val = val.replace('\n','')
+                val = val.replace('\r','')
+                val = val.replace('\t','')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "')"
+                if val == "":
+                    print("", end="")
+                else:
+                    print(val, end="")
+        print()
+        
+        #print sql for reviewing
+        print("sql="+sql);
+        
+        #run sql
+        cursor.execute(sql)
+        
+        print()
+        print()
+    
+    
     
     data = { 
-             "status":"true",
-             "upload_excel":
-                   {
-                    "result": "pass",
-                    "full uploaded file path": newpath
-                   }
-           } 
+        "status":"true",
+        "upload_excel":
+        {
+        "result": "pass",
+        "full uploaded file path": newpath
+        }
+        } 
     
+    #commit changes to databse
+    conn.commit()
+    
+    #return mysql connection to pool
+    cursor.close()
+    conn.close() 
+    
+    #return json response
     return jsonify(data)
     
 # In-memory data store
-items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
+# items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
 
 # GET request: Retrieve all items
-@app.route('/api/items', methods=['GET'])
-def get_items():
-    return jsonify(items)
+# @app.route('/api/items', methods=['GET'])
+# def get_items():
+#     return jsonify(items)
 
 # GET request: Retrieve a specific item by ID
-@app.route('/api/items/<int:item_id>', methods=['GET'])
-def get_item(item_id):
-    item = next((item for item in items if item["id"] == item_id), None)
-    if item is None:
-        return jsonify({"error": "Item not found"}), 404
-    return jsonify(item)
+# @app.route('/api/items/<int:item_id>', methods=['GET'])
+# def get_item(item_id):
+#     item = next((item for item in items if item["id"] == item_id), None)
+#     if item is None:
+#         return jsonify({"error": "Item not found"}), 404
+#     return jsonify(item)
 
 # POST request: Create a new item
-@app.route('/api/items', methods=['POST'])
-def create_item():
-    new_item = {"id": len(items) + 1, "name": request.json.get('name')}
-    items.append(new_item)
-    return jsonify(new_item), 201
+# @app.route('/api/items', methods=['POST'])
+# def create_item():
+#     new_item = {"id": len(items) + 1, "name": request.json.get('name')}
+#     items.append(new_item)
+#     return jsonify(new_item), 201
 
-# PUT request: Update an existing item
-@app.route('/api/items/<int:item_id>', methods=['PUT'])
-def update_item(item_id):
-    item = next((item for item in items if item["id"] == item_id), None)
-    if item is None:
-        return jsonify({"error": "Item not found"}), 404
-    item['name'] = request.json.get('name', item['name'])
-    return jsonify(item)
 
-# DELETE request: Delete an item
-@app.route('/api/items/<int:item_id>', methods=['DELETE'])
-def delete_item(item_id):
-    global items
-    items = [item for item in items if item["id"] != item_id]
-    return '', 204
 
 if __name__ == "__main__":
     #app.run(debug=True)
