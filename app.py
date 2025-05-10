@@ -129,6 +129,8 @@ async def get_masterdata_upload():
     cursor.close()
     conn.close() 
     
+    await asyncio.sleep(5)
+    
     #return json response
     return jsonify(data)
     
