@@ -223,161 +223,125 @@ async def get_masterformula_upload():
 
 
 
+@app.route('/exchange_rate/upload', methods=['POST'])
+async def get_exchangerate_upload():
+    app.logger.info('/master_formula/upload')
+
+    #request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # upload file
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ','_')
+    onlyfilename = onlyfilename.replace('-','_')
+    onlyfileext = fullfilename.split('.')[1];
+    print(request.files);
+    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    app.logger.info("uploaded new file path : "+newpath)
+    file.save(newpath)
+
+    # parse file
+    wb = openpyxl.load_workbook(newpath,data_only=True)
+    ws = wb.active
+    print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
+
+    usd_br = ws.cell(2,2).value
+    print('usd_br='+usd_br)
+    eur_br = ws.cell(2,3).value
+    print('eur_br='+eur_br)
+    jpy_br = ws.cell(2,4).value
+    print('jpy_br='+jpy_br)
+
+    usd_cr = ws.cell(3,2).value
+    print('usd_cr='+usd_cr)
+    eur_cr = ws.cell(3,3).value
+    print('eur_cr='+eur_cr)
+    jpy_cr = ws.cell(3,4).value
+    print('jpy_cr='+jpy_cr)
+
+    usd_pr = ws.cell(4,2).value
+    print('usd_pr='+usd_pr)
+    eur_pr = ws.cell(4,3).value
+    print('eur_pr='+eur_pr)
+    jpy_pr = ws.cell(4,4).value
+    print('jpy_pr='+jpy_pr)
+
+    usd_qr = ws.cell(5,2).value
+    print('usd_qr='+usd_qr)
+    eur_qr = ws.cell(5,3).value
+    print('eur_qr='+eur_qr)
+    jpy_qr = ws.cell(5,4).value
+    print('jpy_qr='+jpy_qr)
+
+    remark = ws.cell(6,2).value
+
+    sql="insert into exchange_rate(usd_br,usd_cr,usd_pr,usd_qr,eur_br,eur_cr,eur_qr,eur_pr,jpy_br,jpy_cr,jpy_pr,jpy_qr,rate_remark,rate_file_name,rate_path)"
+    sql += " values ("
+    sql += usd_br
+    sql += ","
+    sql += usd_cr
+    sql += ","
+    sql += usd_pr
+    sql += ","
+    sql += usd_qr
+    sql += ","
+    sql += eur_br
+    sql += ","
+    sql += eur_cr
+    sql += ","
+    sql += eur_pr
+    sql += ","
+    sql += eur_qr
+    sql += ","
+    sql += jpy_br
+    sql += ","
+    sql += jpy_cr
+    sql += ","
+    sql += jpy_pr
+    sql += ","
+    sql += jpy_qr
+    sql += ",'"
+    sql += remark
+    sql += "','"
+    sql += onlyfilename
+    sql += "','"
+    sql += newpath
+    sql += "')"
+
+    #print sql for reviewing
+    print("sql="+sql);
+
+    #run sql
+    cursor.execute(sql)
+
+    print()
+    print()
 
 
+    data = {
+        "status":"true",
+        "upload_excel":
+        {
+        "result": "pass",
+        "full uploaded file path": newpath
+        }
+        }
 
+    #commit changes to databse
+    conn.commit()
 
+    #return mysql connection to pool
+    cursor.close()
+    conn.close()
 
+    await asyncio.sleep(5)
 
-# app.post("/exchange_rate/upload", async (req, res) => {
-#     const db = require('./db');
-#     const config = require('./config');
-#     const helper = require('./helper');
-#     var form = new formidable.IncomingForm();
-#     form.parse(req, async function (err, fields, files) {
-#      var oldpath = files.file[0].filepath;
-#      var newpath = 'uploaded_files/' + files.file[0].originalFilename;
-#      fs.rename(oldpath, newpath, async function (err) {
-#        if (err)
-#        {
-#          res.writeHead(200, {'Content-Type': 'application/json'});
-#          res.write
-#          (
-#           JSON.stringify
-#            (
-#             {
-#              "status":true,
-#              "upload_excel":
-#               {
-#                "result": "fail",
-#                "oldpath": oldpath,
-#                "newpath": newpath
-#               }
-#              }
-#            )
-#           );
-#           res.end();
-#        }
-#        else
-#        {
-#           var wb = new Excel.Workbook();
-#           wb.xlsx.readFile(newpath).then(async function(){
-#             var workSheet =  wb.getWorksheet("exchange rate");
-#
-#             var workRow = workSheet.getRow(2);
-#             var usd_br = workRow.getCell(2).value;
-#             console.log("usd_br="+usd_br);
-#             var eur_br = workRow.getCell(3).value;
-#             console.log("eur_br="+eur_br);
-#             var jpy_br = workRow.getCell(4).value;
-#             console.log("jpy_br="+jpy_br);
-#
-#             workRow = workSheet.getRow(3);
-#             var usd_cr = workRow.getCell(2).value;
-#             console.log("usd_cr="+usd_cr);
-#             var eur_cr = workRow.getCell(3).value;
-#             console.log("eur_cr="+eur_cr);
-#             var jpy_cr = workRow.getCell(4).value;
-#             console.log("jpy_cr="+jpy_cr);
-#
-#             workRow = workSheet.getRow(4);
-#             var usd_pr = workRow.getCell(2).value;
-#             console.log("usd_pr="+usd_pr);
-#             var eur_pr = workRow.getCell(3).value;
-#             console.log("eur_pr="+eur_pr);
-#             var jpy_pr = workRow.getCell(4).value;
-#             console.log("jpy_pr="+jpy_pr);
-#
-#             workRow = workSheet.getRow(5);
-#             var usd_qr = workRow.getCell(2).value;
-#             console.log("usd_qr="+usd_qr);
-#             var eur_qr = workRow.getCell(3).value;
-#             console.log("eur_qr="+eur_qr);
-#             var jpy_qr = workRow.getCell(4).value;
-#             console.log("jpy_qr="+jpy_qr);
-#
-#             workRow = workSheet.getRow(6);
-#             var remark = workRow.getCell(2).value;
-#             console.log("remark="+remark+"\n");
-#
-#             sql="insert into exchange_rate(usd_br,usd_cr,usd_pr,usd_qr,eur_br,eur_cr,eur_qr,eur_pr,jpy_br,jpy_cr,jpy_pr,jpy_qr,rate_remark,rate_file_name,rate_path)";
-#             sql += " values (";
-#             sql += usd_br;
-#             sql += ",";
-#             sql += usd_cr;
-#             sql += ",";
-#             sql += usd_pr;
-#             sql += ",";
-#             sql += usd_qr;
-#             sql += ",";
-#             sql += eur_br;
-#             sql += ",";
-#             sql += eur_cr;
-#
-#             sql += ",";
-#             sql += eur_pr;
-#
-#             sql += ",";
-#             sql += eur_qr;
-#
-#             sql += ",";
-#             sql += jpy_br;
-#
-#             sql += ",";
-#             sql += jpy_cr;
-#
-#             sql += ",";
-#             sql += jpy_pr;
-#
-#             sql += ",";
-#             sql += jpy_qr;
-#
-#             sql += ",'";
-#             sql += remark;
-#
-#             sql += "','";
-#             sql += files.file[0].originalFilename;
-#
-#             sql += "','";
-#             sql += newpath;
-#
-#             sql += "')";
-#             console.log(sql);
-#             await db.query(sql);
-#
-#            res.writeHead(200, {'Content-Type': 'application/json'});
-#            res.write
-#            (
-#             JSON.stringify
-#             (
-#             {
-#              "status":true,
-#              "upload_excel":
-#               {
-#                "result": "pass",
-#                "oldpath": oldpath,
-#                "newpath": newpath
-#               }
-#              }
-#              )
-#            );
-#            res.end();
-#          });
-#         }
-#      });
-#      });
-# });
+    #return json response
+    return jsonify(data)
 
-
-
-
-
-
-
-
-
-
-    
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
 
