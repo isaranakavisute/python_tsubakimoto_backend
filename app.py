@@ -135,6 +135,17 @@ async def get_masterdata_upload():
     #return json response
     return jsonify(data)
 
+@app.route('/master_data/listall', methods=['POST'])
+def get_masterdata_listall():
+    app.logger.info('/master_data/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from master_tsubakimoto')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
 @app.route('/master_formula/upload', methods=['POST'])
 async def get_masterformula_upload():
     app.logger.info('/master_formula/upload')
@@ -220,8 +231,16 @@ async def get_masterformula_upload():
     #return json response
     return jsonify(data)
 
-
-
+@app.route('/master_formula/listall', methods=['POST'])
+def get_masterformula_listall():
+    app.logger.info('/master_formula/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from master_tsubakimoto_formula')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
 
 @app.route('/exchange_rate/upload', methods=['POST'])
 async def get_exchangerate_upload():
@@ -340,6 +359,17 @@ async def get_exchangerate_upload():
     await asyncio.sleep(5)
 
     #return json response
+    return jsonify(data)
+
+@app.route('/exchange_rate/listall', methods=['POST'])
+def get_exchangerate_listall():
+    app.logger.info('/exchange_rate/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from exchange_rate')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(data)
 
 # In-memory data store
