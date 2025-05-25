@@ -249,60 +249,60 @@ async def get_exchangerate_upload():
     print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
 
     usd_br = ws.cell(2,2).value
-    print('usd_br='+usd_br)
+    print('usd_br='+str(usd_br))
     eur_br = ws.cell(2,3).value
-    print('eur_br='+eur_br)
+    print('eur_br='+str(eur_br))
     jpy_br = ws.cell(2,4).value
-    print('jpy_br='+jpy_br)
+    print('jpy_br='+str(jpy_br))
 
     usd_cr = ws.cell(3,2).value
-    print('usd_cr='+usd_cr)
+    print('usd_cr='+str(usd_cr))
     eur_cr = ws.cell(3,3).value
-    print('eur_cr='+eur_cr)
+    print('eur_cr='+str(eur_cr))
     jpy_cr = ws.cell(3,4).value
-    print('jpy_cr='+jpy_cr)
+    print('jpy_cr='+str(jpy_cr))
 
     usd_pr = ws.cell(4,2).value
-    print('usd_pr='+usd_pr)
+    print('usd_pr='+str(usd_pr))
     eur_pr = ws.cell(4,3).value
-    print('eur_pr='+eur_pr)
+    print('eur_pr='+str(eur_pr))
     jpy_pr = ws.cell(4,4).value
-    print('jpy_pr='+jpy_pr)
+    print('jpy_pr='+str(jpy_pr))
 
     usd_qr = ws.cell(5,2).value
-    print('usd_qr='+usd_qr)
+    print('usd_qr='+str(usd_qr))
     eur_qr = ws.cell(5,3).value
-    print('eur_qr='+eur_qr)
+    print('eur_qr='+str(eur_qr))
     jpy_qr = ws.cell(5,4).value
-    print('jpy_qr='+jpy_qr)
+    print('jpy_qr='+str(jpy_qr))
 
     remark = ws.cell(6,2).value
 
     sql="insert into exchange_rate(usd_br,usd_cr,usd_pr,usd_qr,eur_br,eur_cr,eur_qr,eur_pr,jpy_br,jpy_cr,jpy_pr,jpy_qr,rate_remark,rate_file_name,rate_path)"
     sql += " values ("
-    sql += usd_br
+    sql += str(usd_br)
     sql += ","
-    sql += usd_cr
+    sql += str(usd_cr)
     sql += ","
-    sql += usd_pr
+    sql += str(usd_pr)
     sql += ","
-    sql += usd_qr
+    sql += str(usd_qr)
     sql += ","
-    sql += eur_br
+    sql += str(eur_br)
     sql += ","
-    sql += eur_cr
+    sql += str(eur_cr)
     sql += ","
-    sql += eur_pr
+    sql += str(eur_pr)
     sql += ","
-    sql += eur_qr
+    sql += str(eur_qr)
     sql += ","
-    sql += jpy_br
+    sql += str(jpy_br)
     sql += ","
-    sql += jpy_cr
+    sql += str(jpy_cr)
     sql += ","
-    sql += jpy_pr
+    sql += str(jpy_pr)
     sql += ","
-    sql += jpy_qr
+    sql += str(jpy_qr)
     sql += ",'"
     sql += remark
     sql += "','"
