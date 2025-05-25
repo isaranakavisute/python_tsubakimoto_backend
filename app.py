@@ -160,7 +160,7 @@ async def get_masterformula_upload():
     ws = wb.active
     print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
     for row in range(5, ws.max_row+1):
-        sql="insert into master_tsubakimoto(category,part_no,previous_model_no,new_model_no,unit,manufacturer_suggested_retail_price,new_manufacturer_suggested_retail_price,conversion_to_ft,diff_for_cost,op_price,po_price_jpy_usd,po_price_currency,remark,thb_cost,gp,pricelist_name,multiplier,make_same_price_as_standard_price,new_make_same_price_as_standard_price,standard_price,diff,dist_pl_mull,dist_ex_rate,unit_price,new_unit_price,diff_unit_price,status,supplier_name,stock_reference,cutting_assembly,detail)";
+        sql="insert into master_tsubakimoto_formula(category,part_no,previous_model_no,new_model_no,unit,manufacturer_suggested_retail_price,new_manufacturer_suggested_retail_price,conversion_to_ft,diff_for_cost,op_price,po_price_jpy_usd,po_price_currency,remark,thb_cost,gp,pricelist_name,multiplier,make_same_price_as_standard_price,new_make_same_price_as_standard_price,standard_price,diff,dist_pl_mull,dist_ex_rate,unit_price,new_unit_price,diff_unit_price,status,supplier_name,stock_reference,cutting_assembly,detail)";
         sql += " values (";
         for column in range(1, ws.max_column+1):
             val = ws.cell(row,column).value
@@ -219,6 +219,159 @@ async def get_masterformula_upload():
 
     #return json response
     return jsonify(data)
+
+
+
+
+
+
+
+
+
+
+# app.post("/exchange_rate/upload", async (req, res) => {
+#     const db = require('./db');
+#     const config = require('./config');
+#     const helper = require('./helper');
+#     var form = new formidable.IncomingForm();
+#     form.parse(req, async function (err, fields, files) {
+#      var oldpath = files.file[0].filepath;
+#      var newpath = 'uploaded_files/' + files.file[0].originalFilename;
+#      fs.rename(oldpath, newpath, async function (err) {
+#        if (err)
+#        {
+#          res.writeHead(200, {'Content-Type': 'application/json'});
+#          res.write
+#          (
+#           JSON.stringify
+#            (
+#             {
+#              "status":true,
+#              "upload_excel":
+#               {
+#                "result": "fail",
+#                "oldpath": oldpath,
+#                "newpath": newpath
+#               }
+#              }
+#            )
+#           );
+#           res.end();
+#        }
+#        else
+#        {
+#           var wb = new Excel.Workbook();
+#           wb.xlsx.readFile(newpath).then(async function(){
+#             var workSheet =  wb.getWorksheet("exchange rate");
+#
+#             var workRow = workSheet.getRow(2);
+#             var usd_br = workRow.getCell(2).value;
+#             console.log("usd_br="+usd_br);
+#             var eur_br = workRow.getCell(3).value;
+#             console.log("eur_br="+eur_br);
+#             var jpy_br = workRow.getCell(4).value;
+#             console.log("jpy_br="+jpy_br);
+#
+#             workRow = workSheet.getRow(3);
+#             var usd_cr = workRow.getCell(2).value;
+#             console.log("usd_cr="+usd_cr);
+#             var eur_cr = workRow.getCell(3).value;
+#             console.log("eur_cr="+eur_cr);
+#             var jpy_cr = workRow.getCell(4).value;
+#             console.log("jpy_cr="+jpy_cr);
+#
+#             workRow = workSheet.getRow(4);
+#             var usd_pr = workRow.getCell(2).value;
+#             console.log("usd_pr="+usd_pr);
+#             var eur_pr = workRow.getCell(3).value;
+#             console.log("eur_pr="+eur_pr);
+#             var jpy_pr = workRow.getCell(4).value;
+#             console.log("jpy_pr="+jpy_pr);
+#
+#             workRow = workSheet.getRow(5);
+#             var usd_qr = workRow.getCell(2).value;
+#             console.log("usd_qr="+usd_qr);
+#             var eur_qr = workRow.getCell(3).value;
+#             console.log("eur_qr="+eur_qr);
+#             var jpy_qr = workRow.getCell(4).value;
+#             console.log("jpy_qr="+jpy_qr);
+#
+#             workRow = workSheet.getRow(6);
+#             var remark = workRow.getCell(2).value;
+#             console.log("remark="+remark+"\n");
+#
+#             sql="insert into exchange_rate(usd_br,usd_cr,usd_pr,usd_qr,eur_br,eur_cr,eur_qr,eur_pr,jpy_br,jpy_cr,jpy_pr,jpy_qr,rate_remark,rate_file_name,rate_path)";
+#             sql += " values (";
+#             sql += usd_br;
+#             sql += ",";
+#             sql += usd_cr;
+#             sql += ",";
+#             sql += usd_pr;
+#             sql += ",";
+#             sql += usd_qr;
+#             sql += ",";
+#             sql += eur_br;
+#             sql += ",";
+#             sql += eur_cr;
+#
+#             sql += ",";
+#             sql += eur_pr;
+#
+#             sql += ",";
+#             sql += eur_qr;
+#
+#             sql += ",";
+#             sql += jpy_br;
+#
+#             sql += ",";
+#             sql += jpy_cr;
+#
+#             sql += ",";
+#             sql += jpy_pr;
+#
+#             sql += ",";
+#             sql += jpy_qr;
+#
+#             sql += ",'";
+#             sql += remark;
+#
+#             sql += "','";
+#             sql += files.file[0].originalFilename;
+#
+#             sql += "','";
+#             sql += newpath;
+#
+#             sql += "')";
+#             console.log(sql);
+#             await db.query(sql);
+#
+#            res.writeHead(200, {'Content-Type': 'application/json'});
+#            res.write
+#            (
+#             JSON.stringify
+#             (
+#             {
+#              "status":true,
+#              "upload_excel":
+#               {
+#                "result": "pass",
+#                "oldpath": oldpath,
+#                "newpath": newpath
+#               }
+#              }
+#              )
+#            );
+#            res.end();
+#          });
+#         }
+#      });
+#      });
+# });
+
+
+
+
+
 
 
 
