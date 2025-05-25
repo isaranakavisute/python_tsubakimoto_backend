@@ -31,8 +31,8 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     user="isara",
     password="1234",
     host="localhost",
-    port=3306,  #3307
-    database="akt1" #tsubakimoto test
+    port=3307,  #3306
+    database="tsubakimoto" #akt1
 )
 
 @app.route('/')
@@ -63,6 +63,7 @@ async def get_masterdata_upload():
     fullfilename = file.filename
     onlyfilename = fullfilename.split('.')[0];
     onlyfilename = onlyfilename.replace(' ','_')
+    onlyfilename = onlyfilename.replace('-','_')
     onlyfileext = fullfilename.split('.')[1];
     print(request.files);
     newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
@@ -133,6 +134,96 @@ async def get_masterdata_upload():
     
     #return json response
     return jsonify(data)
+
+@app.route('/master_formula/upload', methods=['POST'])
+async def get_masterformula_upload():
+    app.logger.info('/master_formula/upload')
+
+    #request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # upload file
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ','_')
+    onlyfilename = onlyfilename.replace('-','_')
+    onlyfileext = fullfilename.split('.')[1];
+    print(request.files);
+    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    app.logger.info("uploaded new file path : "+newpath)
+    file.save(newpath)
+
+    # parse file
+    wb = openpyxl.load_workbook(newpath,data_only=False)
+    ws = wb.active
+    print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
+    for row in range(5, ws.max_row+1):
+        sql="insert into master_tsubakimoto(category,part_no,previous_model_no,new_model_no,unit,manufacturer_suggested_retail_price,new_manufacturer_suggested_retail_price,conversion_to_ft,diff_for_cost,op_price,po_price_jpy_usd,po_price_currency,remark,thb_cost,gp,pricelist_name,multiplier,make_same_price_as_standard_price,new_make_same_price_as_standard_price,standard_price,diff,dist_pl_mull,dist_ex_rate,unit_price,new_unit_price,diff_unit_price,status,supplier_name,stock_reference,cutting_assembly,detail)";
+        sql += " values (";
+        for column in range(1, ws.max_column+1):
+            val = ws.cell(row,column).value
+            if val is str:
+                val = val.replace('\n','')
+                val = val.replace('\r','')
+                val = val.replace('\t','')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "')"
+                if val == "":
+                    print("", end="")
+                else:
+                    print(val, end="")
+        print()
+
+        #print sql for reviewing
+        print("sql="+sql);
+
+        #run sql
+        cursor.execute(sql)
+
+        print()
+        print()
+
+
+
+    data = {
+        "status":"true",
+        "upload_excel":
+        {
+        "result": "pass",
+        "full uploaded file path": newpath
+        }
+        }
+
+    #commit changes to databse
+    conn.commit()
+
+    #return mysql connection to pool
+    cursor.close()
+    conn.close()
+
+    await asyncio.sleep(5)
+
+    #return json response
+    return jsonify(data)
+
+
+
+
+
     
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
