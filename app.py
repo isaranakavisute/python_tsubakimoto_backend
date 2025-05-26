@@ -2170,6 +2170,233 @@ def get_company_add():
     }
     return jsonify(data)
 
+@app.route('/company/delete', methods=['POST'])
+def get_company_delete():
+    app.logger.info('/company/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from company";
+    sql += " where company_id="
+    sql += request.form.get('company_id')
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete company":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/distributor/listall', methods=['POST'])
+def get_distributor_listall():
+    app.logger.info('/distributor/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from distributor_product_matching')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/distributor/update', methods=['POST'])
+def get_distributor_update():
+    app.logger.info('/distributor/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "update distributor_product_matching set ";
+
+    if request.form.get('master_price_list') is not None:
+        sql += ","
+        sql += "master_price_list='"
+        sql += request.form.get('master_price_list')
+        sql += "'"
+
+    if request.form.get('master_pricelist_showing_name') is not None:
+        sql += ","
+        sql += "master_pricelist_showing_name='"
+        sql += request.form.get('master_pricelist_showing_name')
+        sql += "'"
+
+    if request.form.get('company_id') is not None:
+        sql += ","
+        sql += "company_id="
+        sql += request.form.get('company_id')
+
+    sql += " where mc_id="
+    sql += request.form.get('mc_id')
+    sql = sql.replace("update distributor_product_matching set ,", "update distributor_product_matching set ")
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "update distributor":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/distributor/add', methods=['POST'])
+def get_distributor_add():
+    app.logger.info('/distributor/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into distributor_product_matching";
+    sql += "(company_id,"
+    sql += "master_price_list,"
+    sql += "master_pricelist_showing_name)"
+    sql += " values (";
+
+    if request.form.get('company_id') is not None:
+        sql += request.form.get('company_id')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('master_price_list') is not None:
+        sql += request.form.get('master_price_list')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('master_pricelist_showing_name') is not None:
+        sql += request.form.get('master_pricelist_showing_name')
+    sql += "'"
+
+    sql += ")"
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "add distributor":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/distributor/delete', methods=['POST'])
+def get_distributor_delete():
+    app.logger.info('/distributor/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from distributor_product_matching";
+    sql += " where mc_id="
+    sql += request.form.get('mc_id')
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete distributor":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/supplier/listall', methods=['POST'])
+def get_supplier_listall():
+    app.logger.info('/supplier/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from supplier_matching')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/supplier/add', methods=['POST'])
+def get_supplier_add():
+    app.logger.info('/supplier/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into supplier_matching"
+    sql += "(sup_name,"
+    sql += "master_pricelist_name,sup_short_name)"
+    sql += " values ("
+
+    sql += "'"
+    if request.form.get('sup_name') is not None:
+        sql += request.form.get('sup_name')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('master_pricelist_name') is not None:
+        sql += request.form.get('master_pricelist_name')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('sup_short_name') is not None:
+        sql += request.form.get('sup_short_name')
+    sql += "'"
+
+    sql += ")"
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "add supplier":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/supplier/delete', methods=['POST'])
+def get_supplier_delete():
+    app.logger.info('/supplier/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from supplier_matching";
+    sql += " where sup_id="
+    sql += request.form.get('sup_id')
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete supplier":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+
+
+
 
 
 
