@@ -2889,9 +2889,17 @@ def get_cost_deleteall():
     conn = connection_pool.get_connection()
     cursor = conn.cursor()
     cursor.execute('delete from cost')
-    data = cursor.fetchall()
+    # data = cursor.fetchall()
+    conn.commit()
     cursor.close()
     conn.close()
+    data = {
+        "status":"true",
+        "delete all cost":
+            {
+                "result": "pass"
+            }
+    }
     return jsonify(data)
 
 @app.route('/cost/upload', methods=['POST'])
