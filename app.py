@@ -155,7 +155,8 @@ def get_masterdata_deleteall():
     conn = connection_pool.get_connection()
     cursor = conn.cursor()
     cursor.execute('delete from master_tsubakimoto')
-    data = cursor.fetchall()
+    # data = cursor.fetchall()
+    conn.commit()
     cursor.close()
     conn.close()
     data = {
