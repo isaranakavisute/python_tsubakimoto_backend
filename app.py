@@ -2394,6 +2394,110 @@ def get_supplier_delete():
     }
     return jsonify(data)
 
+@app.route('/exchange_rate_history/listall', methods=['POST'])
+def get_exchange_rate_history_listall():
+    app.logger.info('/exchange_rate_history/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from exchange_rate_history')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/exchange_rate_history/delete', methods=['POST'])
+def get_exchange_rate_history_delete():
+    app.logger.info('/exchange_rate_history/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from exchange_rate_history";
+    sql += " where rate_doc_id="
+    sql += request.form.get('rate_doc_id')
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete exchange_rate_history":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/exchange_rate_history/upload', methods=['POST'])
+def get_exchange_rate_history_upload():
+    app.logger.info('/exchange_rate_history/upload')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into exchange_rate_history(rate_doc_name,rate_doc_path) values (";
+
+    sql += "'"
+    if request.form.get('rate_doc_name') is not None:
+     sql += request.form.get('rate_doc_name')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('rate_doc_path') is not None:
+        sql += request.form.get('rate_doc_path')
+    sql += "'"
+
+    sql += ")"
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "upload exchange_rate_history":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/exchange_rate_history/download', methods=['POST'])
+def get_exchange_rate_history_download():
+    app.logger.info('/exchange_rate_history/download')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "select * from exchange_rate_history where "
+    sql += "rate_doc_id=";
+    sql += request.form.get('rate_doc_id');
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "show download link":
+            {
+                "document_name": results[0].rate_doc_name,
+                "document_path": results[0].rate_doc_path,
+                "document_download_link": "http://deploy-aws.com:5000/downloadfiletocomputer?fileurl="+results[0].rate_doc_name
+            }
+    }
+    return jsonify(data)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
