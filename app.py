@@ -358,7 +358,7 @@ def get_masterdata_update():
     if request.form.get('detail') is not None:
         sql += ","
         sql += "detail='"
-        sql += request.form['detail']
+        sql += request.json.get('detail')
         sql += "'"
 
     sql += " where Id="
