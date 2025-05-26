@@ -379,6 +379,307 @@ def get_masterdata_update():
     }
     return jsonify(data)
 
+@app.route('/master_data/add', methods=['POST'])
+def get_masterdata_add():
+    app.logger.info('/master_data/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into master_tsubakimoto";
+    sql += "(category,";
+    sql += "part_no,";
+    sql += "previous_model_no,";
+    sql += "new_model_no,";
+    sql += "unit,";
+    sql += "manufacturer_suggested_retail_price,";
+    sql += "new_manufacturer_suggested_retail_price,";
+    sql += "conversion_to_ft,";
+    sql += "diff_for_cost,";
+    sql += "op_price,";
+    sql += "po_price_jpy_usd,";
+    sql += "po_price_currency,";
+    sql += "remark,";
+    sql += "thb_cost,";
+    sql += "gp,";
+    sql += "pricelist_name,";
+    sql += "multiplier,";
+    sql += "make_same_price_as_standard_price,";
+    sql += "new_make_same_price_as_standard_price,";
+    sql += "standard_price,";
+    sql += "diff,";
+    sql += "dist_pl_mull,";
+    sql += "dist_ex_rate,";
+    sql += "unit_price,";
+    sql += "new_unit_price,";
+    sql += "diff_unit_price,";
+    sql += "status,";
+    sql += "supplier_name,";
+    sql += "stock_reference,";
+    sql += "cutting_assembly,";
+    sql += "detail)";
+    sql += " values (";
+
+    sql += "'"
+    if request.form.get('category') is not None:
+        sql += request.form.get('category')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('part_no') is not None:
+     sql += request.form.get('part_no')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('previous_model_no') is not None:
+        sql += request.form.get('previous_model_no')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_model_no') is not None:
+        sql += request.form.get('new_model_no')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('unit') is not None:
+        sql += request.form.get('unit')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('manufacturer_suggested_retail_price') is not None:
+        sql += request.form.get('manufacturer_suggested_retail_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_manufacturer_suggested_retail_price') is not None:
+        sql += request.form.get('new_manufacturer_suggested_retail_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('conversion_to_ft') is not None:
+        sql += request.form.get('conversion_to_ft')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('diff_for_cost') is not None:
+        sql += request.form.get('diff_for_cost')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('op_price') is not None:
+        sql += request.form.get('op_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('po_price_jpy_usd') is not None:
+        sql += request.form.get('po_price_jpy_usd')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('po_price_currency') is not None:
+        sql += request.form.get('po_price_currency')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('remark') is not None:
+        sql += request.form.get('remark')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('thb_cost') is not None:
+        sql += request.form.get('thb_cost')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('gp') is not None:
+        sql += request.form.get('gp')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('pricelist_name') is not None:
+        sql += request.form.get('pricelist_name')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('multiplier') is not None:
+     sql += request.form.get('multiplier')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('make_same_price_as_standard_price') is not None:
+        sql += request.form.get('make_same_price_as_standard_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_make_same_price_as_standard_price') is not None:
+        sql += request.form.get('new_make_same_price_as_standard_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('standard_price') is not None:
+        sql += request.form.get('standard_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('diff') is not None:
+        sql += request.form.get('diff')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('dist_pl_mull') is not None:
+        sql += request.form.get('dist_pl_mull')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('dist_ex_rate') is not None:
+        sql += request.form.get('dist_ex_rate')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('unit_price') is not None:
+        sql += request.form.get('unit_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_unit_price') is not None:
+        sql += request.form.get('new_unit_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('diff_unit_price') is not None:
+        sql += request.form.get('diff_unit_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('status') is not None:
+        sql += request.form.get('status')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('supplier_name') is not None:
+        sql += request.form.get('supplier_name')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('stock_reference') is not None:
+        sql += request.form.get('stock_reference')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('cutting_assembly') is not None:
+        sql += request.form.get('cutting_assembly')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('detail') is not None:
+        sql += request.form.get('detail')
+    sql += "'"
+
+    sql += ")";
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "add masterdata":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/master_data/delete', methods=['POST'])
+def get_masterdata_delete():
+    app.logger.info('/master_data/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from master_tsubakimoto"
+    sql += " where Id="
+    sql += request.form.get('Id')
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "delete masterdata with id":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
 @app.route('/master_formula/upload', methods=['POST'])
 async def get_masterformula_upload():
     app.logger.info('/master_formula/upload')
@@ -487,6 +788,522 @@ def get_masterformula_deleteall():
     data = {
         "status":"true",
         "delete all masterdata formula":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/master_formula/update', methods=['POST'])
+def get_masterformula_update():
+    app.logger.info('/master_data/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "update master_tsubakimoto_formula set "
+
+    if request.form.get('category') is not None:
+        sql += ","
+        sql += "category='"
+        sql += request.form.get('category')
+        sql += "'"
+
+    if request.form.get('part_no') is not None:
+        sql += ","
+        sql += "part_no='"
+        sql += request.form.get('part_no')
+        sql += "'"
+
+    if request.form.get('previous_model_no') is not None:
+        sql += ","
+        sql += "previous_model_no='"
+        sql += request.form.get('previous_model_no')
+        sql += "'"
+
+    if request.form.get('new_model_no') is not None:
+        sql += ","
+        sql += "new_model_no='"
+        sql += request.form.get('new_model_no')
+        sql += "'"
+
+    if request.form.get('new_model_no') is not None:
+        sql += ","
+        sql += "unit='"
+        sql += request.form.get('new_model_no')
+        sql += "'"
+
+    if request.form.get('manufacturer_suggested_retail_price') is not None:
+        sql += ","
+        sql += "manufacturer_suggested_retail_price='"
+        sql += request.form.get('manufacturer_suggested_retail_price')
+        sql += "'"
+
+    if request.form.get('new_manufacturer_suggested_retail_price') is not None:
+        sql += ","
+        sql += "new_manufacturer_suggested_retail_price='"
+        sql += request.form.get('new_manufacturer_suggested_retail_price')
+        sql += "'"
+
+    if request.form.get('conversion_to_ft') is not None:
+        sql += ","
+        sql += "conversion_to_ft='"
+        sql += request.form.get('conversion_to_ft')
+        sql += "'"
+
+    if request.form.get('diff_for_cost') is not None:
+        sql += ","
+        sql += "diff_for_cost='"
+        sql += request.form.get('diff_for_cost')
+        sql += "'"
+
+    if request.form.get('op_price') is not None:
+        sql += ","
+        sql += "op_price='"
+        sql += request.form.get('op_price')
+        sql += "'"
+
+    if request.form.get('po_price_jpy_usd') is not None:
+        sql += ","
+        sql += "po_price_jpy_usd='"
+        sql += request.form.get('po_price_jpy_usd')
+        sql += "'"
+
+    if request.form.get('po_price_currency') is not None:
+        sql += ","
+        sql += "po_price_currency='"
+        sql += request.form.get('po_price_currency')
+        sql += "'"
+
+    if request.form.get('remark') is not None:
+        sql += ","
+        sql += "remark='"
+        sql += request.form.get('remark')
+        sql += "'"
+
+    if request.form.get('thb_cost') is not None:
+        sql += ","
+        sql += "thb_cost='"
+        sql += request.form.get('thb_cost')
+        sql += "'"
+
+    if request.form.get('gp') is not None:
+        sql += ","
+        sql += "gp='"
+        sql += request.form.get('gp')
+        sql += "'"
+
+    if request.form.get('pricelist_name') is not None:
+        sql += ","
+        sql += "pricelist_name='"
+        sql += request.form.get('pricelist_name')
+        sql += "'"
+
+    if request.form.get('multiplier') is not None:
+        sql += ","
+        sql += "multiplier='"
+        sql += request.form.get('multiplier')
+        sql += "'"
+
+    if request.form.get('make_same_price_as_standard_price') is not None:
+        sql += ","
+        sql += "make_same_price_as_standard_price='"
+        sql += request.form.get('make_same_price_as_standard_price')
+        sql += "'"
+
+    if request.form.get('new_make_same_price_as_standard_price') is not None:
+        sql += ","
+        sql += "new_make_same_price_as_standard_price='"
+        sql += request.form.get('new_make_same_price_as_standard_price')
+        sql += "'"
+
+    if request.form.get('standard_price') is not None:
+        sql += ","
+        sql += "standard_price='"
+        sql += request.form.get('standard_price')
+        sql += "'"
+
+    if request.form.get('diff') is not None:
+        sql += ","
+        sql += "diff='"
+        sql += request.form.get('diff')
+        sql += "'"
+
+    if request.form.get('dist_pl_mul') is not None:
+        sql += ","
+        sql += "dist_pl_mull='"
+        sql += request.form.get('dist_pl_mul')
+        sql += "'"
+
+    if request.form.get('dist_ex_rate') is not None:
+        sql += ","
+        sql += "dist_ex_rate='"
+        sql += request.form.get('dist_ex_rate')
+        sql += "'"
+
+    if request.form.get('unit_price') is not None:
+        sql += ","
+        sql += "unit_price='"
+        sql += request.form.get('unit_price')
+        sql += "'"
+
+    if request.form.get('new_unit_price') is not None:
+        sql += ","
+        sql += "new_unit_price='"
+        sql += request.form.get('new_unit_price')
+        sql += "'"
+
+    if request.form.get('diff_unit_price') is not None:
+        sql += ","
+        sql += "diff_unit_price='"
+        sql += request.form.get('diff_unit_price')
+        sql += "'"
+
+    if request.form.get('status') is not None:
+        sql += ","
+        sql += "status='"
+        sql += request.form.get('status')
+        sql += "'"
+
+    if request.form.get('supplier_name') is not None:
+        sql += ","
+        sql += "supplier_name='"
+        sql += request.form.get('supplier_name')
+        sql += "'"
+
+    if request.form.get('stock_reference') is not None:
+        sql += ","
+        sql += "stock_reference='"
+        sql += request.form.get('stock_reference')
+        sql += "'"
+
+    if request.form.get('cutting_assembly') is not None:
+        sql += ","
+        sql += "cutting_assembly='"
+        sql += request.form.get('cutting_assembly')
+        sql += "'"
+
+    if request.form.get('detail') is not None:
+        sql += ","
+        sql += "detail='"
+        sql += request.form.get('detail')
+        sql += "'"
+
+    sql += " where Id="
+    sql += request.form.get('Id')
+
+    sql = sql.replace('update master_tsubakimoto set ,','update master_tsubakimoto set ')
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "update masterdata":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/master_formula/add', methods=['POST'])
+def get_masterformula_add():
+    app.logger.info('/master_data/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into master_tsubakimoto_formula";
+    sql += "(category,";
+    sql += "part_no,";
+    sql += "previous_model_no,";
+    sql += "new_model_no,";
+    sql += "unit,";
+    sql += "manufacturer_suggested_retail_price,";
+    sql += "new_manufacturer_suggested_retail_price,";
+    sql += "conversion_to_ft,";
+    sql += "diff_for_cost,";
+    sql += "op_price,";
+    sql += "po_price_jpy_usd,";
+    sql += "po_price_currency,";
+    sql += "remark,";
+    sql += "thb_cost,";
+    sql += "gp,";
+    sql += "pricelist_name,";
+    sql += "multiplier,";
+    sql += "make_same_price_as_standard_price,";
+    sql += "new_make_same_price_as_standard_price,";
+    sql += "standard_price,";
+    sql += "diff,";
+    sql += "dist_pl_mull,";
+    sql += "dist_ex_rate,";
+    sql += "unit_price,";
+    sql += "new_unit_price,";
+    sql += "diff_unit_price,";
+    sql += "status,";
+    sql += "supplier_name,";
+    sql += "stock_reference,";
+    sql += "cutting_assembly,";
+    sql += "detail)";
+    sql += " values (";
+
+    sql += "'"
+    if request.form.get('category') is not None:
+        sql += request.form.get('category')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('part_no') is not None:
+        sql += request.form.get('part_no')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('previous_model_no') is not None:
+        sql += request.form.get('previous_model_no')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_model_no') is not None:
+        sql += request.form.get('new_model_no')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('unit') is not None:
+        sql += request.form.get('unit')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('manufacturer_suggested_retail_price') is not None:
+        sql += request.form.get('manufacturer_suggested_retail_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_manufacturer_suggested_retail_price') is not None:
+        sql += request.form.get('new_manufacturer_suggested_retail_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('conversion_to_ft') is not None:
+        sql += request.form.get('conversion_to_ft')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('diff_for_cost') is not None:
+        sql += request.form.get('diff_for_cost')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('op_price') is not None:
+        sql += request.form.get('op_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('po_price_jpy_usd') is not None:
+        sql += request.form.get('po_price_jpy_usd')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('po_price_currency') is not None:
+        sql += request.form.get('po_price_currency')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('remark') is not None:
+        sql += request.form.get('remark')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('thb_cost') is not None:
+        sql += request.form.get('thb_cost')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('gp') is not None:
+        sql += request.form.get('gp')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('pricelist_name') is not None:
+        sql += request.form.get('pricelist_name')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('multiplier') is not None:
+        sql += request.form.get('multiplier')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('make_same_price_as_standard_price') is not None:
+        sql += request.form.get('make_same_price_as_standard_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_make_same_price_as_standard_price') is not None:
+        sql += request.form.get('new_make_same_price_as_standard_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('standard_price') is not None:
+        sql += request.form.get('standard_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('diff') is not None:
+        sql += request.form.get('diff')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('dist_pl_mull') is not None:
+        sql += request.form.get('dist_pl_mull')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('dist_ex_rate') is not None:
+        sql += request.form.get('dist_ex_rate')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('unit_price') is not None:
+        sql += request.form.get('unit_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('new_unit_price') is not None:
+        sql += request.form.get('new_unit_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('diff_unit_price') is not None:
+        sql += request.form.get('diff_unit_price')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('status') is not None:
+        sql += request.form.get('status')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('supplier_name') is not None:
+        sql += request.form.get('supplier_name')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('stock_reference') is not None:
+        sql += request.form.get('stock_reference')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('cutting_assembly') is not None:
+        sql += request.form.get('cutting_assembly')
+    sql += "'"
+
+    sql += ','
+
+    sql += "'"
+    if request.form.get('detail') is not None:
+        sql += request.form.get('detail')
+    sql += "'"
+
+    sql += ")";
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "add masterdata":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/master_formula/delete', methods=['POST'])
+def get_masterformula_delete():
+    app.logger.info('/master_formula/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from master_tsubakimoto_formula"
+    sql += " where Id="
+    sql += request.form.get('Id')
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "delete masterformula with id":
             {
                 "result": "pass"
             }
@@ -622,6 +1439,130 @@ def get_exchangerate_listall():
     cursor.close()
     conn.close()
     return jsonify(data)
+
+@app.route('/exchange_rate/deleteall', methods=['POST'])
+def get_exchangerate_deleteall():
+    app.logger.info('/exchange_rate/deleteall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('delete from exchange_rate')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete all exchange_rate":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/exchange_rate/update', methods=['POST'])
+def get_exchangerate_update():
+    app.logger.info('/exchange_rate/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "update exchange_rate set "
+
+    if request.form.get('usd_br') is not None:
+        sql += ","
+        sql += "usd_br="
+        sql += request.form.get('usd_br')
+
+    if request.form.get('usd_cr') is not None:
+        sql += ","
+        sql += "usd_cr="
+        sql += request.form.get('usd_cr')
+
+    if request.form.get('usd_qr') is not None:
+        sql += ","
+        sql += "usd_qr="
+        sql += request.form.get('usd_qr')
+
+    if request.form.get('usd_pr') is not None:
+        sql += ","
+        sql += "usd_pr="
+        sql += request.form.get('usd_pr')
+
+    if request.form.get('eur_br') is not None:
+        sql += ","
+        sql += "eur_br="
+        sql += request.form.get('eur_br')
+
+    if request.form.get('eur_cr') is not None:
+        sql += ","
+        sql += "eur_cr="
+        sql += request.form.get('eur_cr')
+
+    if request.form.get('eur_qr') is not None:
+        sql += ","
+        sql += "eur_qr="
+        sql += request.form.get('eur_qr')
+
+    if request.form.get('eur_pr') is not None:
+        sql += ","
+        sql += "eur_pr="
+        sql += request.form.get('eur_pr')
+
+    if request.form.get('jpy_br') is not None:
+        sql += ","
+        sql += "jpy_br="
+        sql += request.form.get('jpy_br')
+
+    if request.form.get('jpy_cr') is not None:
+        sql += ","
+        sql += "jpy_cr="
+        sql += request.form.get('jpy_cr')
+
+    if request.form.get('jpy_qr') is not None:
+        sql += ","
+        sql += "jpy_qr="
+        sql += request.form.get('jpy_qr')
+
+    if request.form.get('jpy_pr') is not None:
+        sql += ","
+        sql += "jpy_pr="
+        sql += request.form.get('jpy_pr')
+
+    if request.form.get('rate_remark') is not None:
+        sql += ","
+        sql += "rate_remark="
+        sql += request.form.get('rate_remark')
+
+    if request.form.get('file_name') is not None:
+        sql += ","
+        sql += "file_name="
+        sql += request.form.get('file_name')
+
+    if request.form.get('rate_path') is not None:
+        sql += ","
+        sql += "rate_path="
+        sql += request.form.get('rate_path')
+
+    sql += " where rate_id="
+    sql += request.form.get('rate_id')
+
+    sql = sql.replace("update exchange_rate set ,", "update exchange_rate set ");
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "update exchange_rate":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
 
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
