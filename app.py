@@ -364,7 +364,7 @@ def get_masterdata_update():
         sql += "'"
 
     sql += " where Id="
-    sql += request.get_json().get('Id')
+    sql += request.form.get('Id')
 
     sql = sql.replace('update master_tsubakimoto set ,','update master_tsubakimoto set ')
     print('sql='+sql)
