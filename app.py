@@ -1563,6 +1563,173 @@ def get_exchangerate_update():
     }
     return jsonify(data)
 
+@app.route('/exchange_rate/delete', methods=['POST'])
+def get_exchangerate_delete():
+    app.logger.info('/exchange_rate/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from exchange_rate"
+    sql += " where rate_id="
+    sql += request.form.get('rate_id')
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "delete exchange_rate by id":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/exchange_rate/add', methods=['POST'])
+def get_exchangerate_add():
+    app.logger.info('/exchange_rate/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into exchange_rate(usd_br,usd_cr,usd_pr,usd_qr,eur_br,eur_cr,eur_qr,eur_pr,jpy_br,jpy_cr,jpy_pr,jpy_qr,rate_remark,rate_file_name,rate_path)";
+    sql += " values ("
+
+    if request.form.get('usd_br') is not None:
+       sql += request.form.get('usd_br')
+    else:
+       sql += "null"
+
+    sql += ","
+
+    if request.form.get('usd_cr') is not None:
+        sql += request.form.get('usd_cr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('usd_pr') is not None:
+        sql += request.form.get('usd_pr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('usd_qr') is not None:
+        sql += request.form.get('usd_qr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('eur_br') is not None:
+        sql += request.form.get('eur_br')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('eur_cr') is not None:
+        sql += request.form.get('eur_cr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('eur_qr') is not None:
+        sql += request.form.get('eur_qr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('eur_pr') is not None:
+        sql += request.form.get('eur_pr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('jpy_br') is not None:
+        sql += request.form.get('jpy_br')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('jpy_cr') is not None:
+        sql += request.form.get('jpy_cr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('jpy_pr') is not None:
+        sql += request.form.get('jpy_pr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('jpy_qr') is not None:
+        sql += request.form.get('jpy_qr')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('rate_remark') is not None:
+        sql += request.form.get('rate_remark');
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('rate_file_name') is not None:
+        sql += request.form.get('rate_file_name');
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('rate_path') is not None:
+        sql += request.form.get('rate_path');
+    sql += "'"
+
+    sql += ")"
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "add exchange_rate":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+
+
+
+
+
+
+
+
+
 
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
