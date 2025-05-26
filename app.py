@@ -174,194 +174,194 @@ def get_masterdata_update():
 
 
 
-    # if request.args.get('category') is not None:
-    #     sql += ","
-    #     sql += "category='"
-    #     sql += request.get_json().get('category')
-    #     sql += "'"
-    #
-    # if request.args.get('part_no') is not None:
-    #     sql += ","
-    #     sql += "part_no='"
-    #     sql += request.get_json().get('part_no')
-    #     sql += "'"
-    #
-    # if request.args.get('previous_model_no') is not None:
-    #     sql += ","
-    #     sql += "previous_model_no='"
-    #     sql += request.get_json().get('previous_model_no')
-    #     sql += "'"
-    #
-    # if request.args.get('new_model_no') is not None:
-    #     sql += ","
-    #     sql += "new_model_no='"
-    #     sql += request.get_json().get('new_model_no')
-    #     sql += "'"
-    #
-    # if request.args.get('new_model_no') is not None:
-    #     sql += ","
-    #     sql += "unit='"
-    #     sql += request.get_json().get('unit')
-    #     sql += "'"
-    #
-    # if request.args.get('manufacturer_suggested_retail_price') is not None:
-    #     sql += ","
-    #     sql += "manufacturer_suggested_retail_price='"
-    #     sql += request.get_json().get('manufacturer_suggested_retail_price')
-    #     sql += "'"
-    #
-    # if request.args.get('new_manufacturer_suggested_retail_price') is not None:
-    #     sql += ","
-    #     sql += "new_manufacturer_suggested_retail_price='"
-    #     sql += request.get_json().get('new_manufacturer_suggested_retail_price')
-    #     sql += "'"
-    #
-    # if request.args.get('conversion_to_ft') is not None:
-    #     sql += ","
-    #     sql += "conversion_to_ft='"
-    #     sql += request.get_json().get('conversion_to_ft')
-    #     sql += "'"
-    #
-    # if request.args.get('diff_for_cost') is not None:
-    #     sql += ","
-    #     sql += "diff_for_cost='"
-    #     sql += request.get_json().get('diff_for_cost')
-    #     sql += "'"
-    #
-    # if request.args.get('op_price') is not None:
-    #     sql += ","
-    #     sql += "op_price='"
-    #     sql += request.get_json().get('op_price')
-    #     sql += "'"
-    #
-    # if request.args.get('po_price_jpy_usd') is not None:
-    #     sql += ","
-    #     sql += "po_price_jpy_usd='"
-    #     sql += request.get_json().get('po_price_jpy_usd')
-    #     sql += "'"
-    #
-    # if request.args.get('po_price_currency') is not None:
-    #     sql += ","
-    #     sql += "po_price_currency='"
-    #     sql += request.get_json().get('po_price_currency')
-    #     sql += "'"
-    #
-    # if request.args.get('remark') is not None:
-    #     sql += ","
-    #     sql += "remark='"
-    #     sql += request.get_json().get('remark')
-    #     sql += "'"
-    #
-    # if request.args.get('thb_cost') is not None:
-    #     sql += ","
-    #     sql += "thb_cost='"
-    #     sql += request.get_json().get('thb_cost')
-    #     sql += "'"
-    #
-    # if request.args.get('gp') is not None:
-    #     sql += ","
-    #     sql += "gp='"
-    #     sql += request.get_json().get('gp')
-    #     sql += "'"
-    #
-    # if request.args.get('pricelist_name') is not None:
-    #     sql += ","
-    #     sql += "pricelist_name='"
-    #     sql += request.get_json().get('pricelist_name')
-    #     sql += "'"
-    #
-    # if request.args.get('multiplier') is not None:
-    #     sql += ","
-    #     sql += "multiplier='"
-    #     sql += request.get_json().get('multiplier')
-    #     sql += "'"
-    #
-    # if request.args.get('make_same_price_as_standard_price') is not None:
-    #     sql += ","
-    #     sql += "make_same_price_as_standard_price='"
-    #     sql += request.get_json().get('make_same_price_as_standard_price')
-    #     sql += "'"
-    #
-    # if request.args.get('new_make_same_price_as_standard_price') is not None:
-    #     sql += ","
-    #     sql += "new_make_same_price_as_standard_price='"
-    #     sql += request.get_json().get('new_make_same_price_as_standard_price')
-    #     sql += "'"
-    #
-    # if request.args.get('standard_price') is not None:
-    #     sql += ","
-    #     sql += "standard_price='"
-    #     sql += request.get_json().get('standard_price')
-    #     sql += "'"
-    #
-    # if request.args.get('diff') is not None:
-    #     sql += ","
-    #     sql += "diff='"
-    #     sql += request.get_json().get('diff')
-    #     sql += "'"
-    #
-    # if request.args.get('dist_pl_mul') is not None:
-    #     sql += ","
-    #     sql += "dist_pl_mull='"
-    #     sql += request.get_json().get('dist_pl_mul')
-    #     sql += "'"
-    #
-    # if request.args.get('dist_ex_rate') is not None:
-    #     sql += ","
-    #     sql += "dist_ex_rate='"
-    #     sql += request.get_json().get('dist_ex_rate')
-    #     sql += "'"
-    #
-    # if request.args.get('unit_price') is not None:
-    #     sql += ","
-    #     sql += "unit_price='"
-    #     sql += request.get_json().get('unit_price')
-    #     sql += "'"
-    #
-    # if request.args.get('new_unit_price') is not None:
-    #     sql += ","
-    #     sql += "new_unit_price='"
-    #     sql += request.get_json().get('new_unit_price')
-    #     sql += "'"
-    #
-    # if request.args.get('diff_unit_price') is not None:
-    #     sql += ","
-    #     sql += "diff_unit_price='"
-    #     sql += request.get_json().get('diff_unit_price')
-    #     sql += "'"
-    #
-    # if request.args.get('status') is not None:
-    #     sql += ","
-    #     sql += "status='"
-    #     sql += request.get_json().get('status')
-    #     sql += "'"
-    #
-    # if request.args.get('supplier_name') is not None:
-    #     sql += ","
-    #     sql += "supplier_name='"
-    #     sql += request.get_json().get('supplier_name')
-    #     sql += "'"
-    #
-    # if request.args.get('stock_reference') is not None:
-    #     sql += ","
-    #     sql += "stock_reference='"
-    #     sql += request.get_json().get('stock_reference')
-    #     sql += "'"
-    #
-    # if request.args.get('cutting_assembly') is not None:
-    #     sql += ","
-    #     sql += "cutting_assembly='"
-    #     sql += request.get_json().get('cutting_assembly')
-    #     sql += "'"
+    if request.form.get('category') is not None:
+        sql += ","
+        sql += "category='"
+        sql += request.form.get('category')
+        sql += "'"
+
+    if request.form.get('part_no') is not None:
+        sql += ","
+        sql += "part_no='"
+        sql += request.form.get('part_no')
+        sql += "'"
+
+    if request.form.get('previous_model_no') is not None:
+        sql += ","
+        sql += "previous_model_no='"
+        sql += request.form.get('previous_model_no')
+        sql += "'"
+
+    if request.form.get('new_model_no') is not None:
+        sql += ","
+        sql += "new_model_no='"
+        sql += request.form.get('new_model_no')
+        sql += "'"
+
+    if request.form.get('new_model_no') is not None:
+        sql += ","
+        sql += "unit='"
+        sql += request.form.get('new_model_no')
+        sql += "'"
+
+    if request.form.get('manufacturer_suggested_retail_price') is not None:
+        sql += ","
+        sql += "manufacturer_suggested_retail_price='"
+        sql += request.form.get('manufacturer_suggested_retail_price')
+        sql += "'"
+
+    if request.form.get('new_manufacturer_suggested_retail_price') is not None:
+        sql += ","
+        sql += "new_manufacturer_suggested_retail_price='"
+        sql += request.form.get('new_manufacturer_suggested_retail_price')
+        sql += "'"
+
+    if request.form.get('conversion_to_ft') is not None:
+        sql += ","
+        sql += "conversion_to_ft='"
+        sql += request.form.get('conversion_to_ft')
+        sql += "'"
+
+    if request.form.get('diff_for_cost') is not None:
+        sql += ","
+        sql += "diff_for_cost='"
+        sql += request.form.get('diff_for_cost')
+        sql += "'"
+
+    if request.form.get('op_price') is not None:
+        sql += ","
+        sql += "op_price='"
+        sql += request.form.get('op_price')
+        sql += "'"
+
+    if request.form.get('po_price_jpy_usd') is not None:
+        sql += ","
+        sql += "po_price_jpy_usd='"
+        sql += request.form.get('po_price_jpy_usd')
+        sql += "'"
+
+    if request.form.get('po_price_currency') is not None:
+        sql += ","
+        sql += "po_price_currency='"
+        sql += request.form.get('po_price_currency')
+        sql += "'"
+
+    if request.form.get('remark') is not None:
+        sql += ","
+        sql += "remark='"
+        sql += request.form.get('remark')
+        sql += "'"
+
+    if request.form.get('thb_cost') is not None:
+        sql += ","
+        sql += "thb_cost='"
+        sql += request.form.get('thb_cost')
+        sql += "'"
+
+    if request.form.get('gp') is not None:
+        sql += ","
+        sql += "gp='"
+        sql += request.form.get('gp')
+        sql += "'"
+
+    if request.form.get('pricelist_name') is not None:
+        sql += ","
+        sql += "pricelist_name='"
+        sql += request.form.get('pricelist_name')
+        sql += "'"
+
+    if request.form.get('multiplier') is not None:
+        sql += ","
+        sql += "multiplier='"
+        sql += request.form.get('multiplier')
+        sql += "'"
+
+    if request.form.get('make_same_price_as_standard_price') is not None:
+        sql += ","
+        sql += "make_same_price_as_standard_price='"
+        sql += request.form.get('make_same_price_as_standard_price')
+        sql += "'"
+
+    if request.form.get('new_make_same_price_as_standard_price') is not None:
+        sql += ","
+        sql += "new_make_same_price_as_standard_price='"
+        sql += request.form.get('new_make_same_price_as_standard_price')
+        sql += "'"
+
+    if request.form.get('standard_price') is not None:
+        sql += ","
+        sql += "standard_price='"
+        sql += request.form.get('standard_price')
+        sql += "'"
+
+    if request.form.get('diff') is not None:
+        sql += ","
+        sql += "diff='"
+        sql += request.form.get('diff')
+        sql += "'"
+
+    if request.form.get('dist_pl_mul') is not None:
+        sql += ","
+        sql += "dist_pl_mull='"
+        sql += request.form.get('dist_pl_mul')
+        sql += "'"
+
+    if request.form.get('dist_ex_rate') is not None:
+        sql += ","
+        sql += "dist_ex_rate='"
+        sql += request.form.get('dist_ex_rate')
+        sql += "'"
+
+    if request.form.get('unit_price') is not None:
+        sql += ","
+        sql += "unit_price='"
+        sql += request.form.get('unit_price')
+        sql += "'"
+
+    if request.form.get('new_unit_price') is not None:
+        sql += ","
+        sql += "new_unit_price='"
+        sql += request.form.get('new_unit_price')
+        sql += "'"
+
+    if request.form.get('diff_unit_price') is not None:
+        sql += ","
+        sql += "diff_unit_price='"
+        sql += request.form.get('diff_unit_price')
+        sql += "'"
+
+    if request.form.get('status') is not None:
+        sql += ","
+        sql += "status='"
+        sql += request.form.get('status')
+        sql += "'"
+
+    if request.form.get('supplier_name') is not None:
+        sql += ","
+        sql += "supplier_name='"
+        sql += request.form.get('supplier_name')
+        sql += "'"
+
+    if request.form.get('stock_reference') is not None:
+        sql += ","
+        sql += "stock_reference='"
+        sql += request.form.get('stock_reference')
+        sql += "'"
+
+    if request.form.get('cutting_assembly') is not None:
+        sql += ","
+        sql += "cutting_assembly='"
+        sql += request.form.get('cutting_assembly')
+        sql += "'"
 
     #if request.args.get('detail') is not None:
     #if request.form.get('detail') is not None:
     #if request.form.keys() is not None:
 
-    if request.form.get('isara') is not None:
-        print('there is isara')
-    else:
-        print('there is no isara')
+    # if request.form.get('isara') is not None:
+    #     print('there is isara')
+    # else:
+    #     print('there is no isara')
 
     if request.form.get('detail') is not None:
         sql += ","
