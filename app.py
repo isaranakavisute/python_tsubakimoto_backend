@@ -2100,6 +2100,77 @@ def get_company_update():
     }
     return jsonify(data)
 
+@app.route('/company/add', methods=['POST'])
+def get_company_add():
+    app.logger.info('/company/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into company";
+    sql += "(company_name,";
+    sql += "company_info,";
+    sql += "company_phone,";
+    sql += "company_fax,";
+    sql += "company_email,";
+    sql += "company_pic)";
+    sql += " values (";
+
+    sql += "'"
+    if request.form.get('company_name') is not None:
+     sql += request.form.get('company_name')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('company_info') is not None:
+        sql += request.form.get('company_info')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('company_phone') is not None:
+        sql += request.form.get('company_phone')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('company_fax') is not None:
+        sql += request.form.get('company_fax')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('company_email') is not None:
+        sql += request.form.get('company_email')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('company_pic') is not None:
+        sql += request.form.get('company_pic')
+    sql += "'"
+
+    sql += ")"
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "add company":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+
 
 
 # In-memory data store
