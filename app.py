@@ -172,8 +172,6 @@ def get_masterdata_update():
 
     sql = "update master_tsubakimoto set "
 
-
-
     if request.form.get('category') is not None:
         sql += ","
         sql += "category='"
@@ -353,15 +351,6 @@ def get_masterdata_update():
         sql += "cutting_assembly='"
         sql += request.form.get('cutting_assembly')
         sql += "'"
-
-    #if request.args.get('detail') is not None:
-    #if request.form.get('detail') is not None:
-    #if request.form.keys() is not None:
-
-    # if request.form.get('isara') is not None:
-    #     print('there is isara')
-    # else:
-    #     print('there is no isara')
 
     if request.form.get('detail') is not None:
         sql += ","
