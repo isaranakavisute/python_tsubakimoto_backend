@@ -1772,6 +1772,50 @@ def get_masterhistory_add():
     }
     return jsonify(data)
 
+@app.route('/master_history/update', methods=['POST'])
+def get_masterhistory_update():
+    app.logger.info('/master_history/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "update master_pricelist_history set ";
+
+    if request.form.get('master_file_name') is not None:
+        sql += ","
+        sql += "master_file_name='"
+        sql += request.form.get('master_file_name')
+        sql += "'"
+
+
+    if request.form.get('file_path') is not None:
+        sql += ",";
+        sql += "file_path='";
+        sql += request.form.get('file_path')
+        sql += "'";
+
+    sql += " where master_file_id="
+    sql += request.form.get('master_file_id')
+
+    sql = sql.replace("update master_pricelist_history set ,", "update master_pricelist_history set ");
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "update master_history":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
 
