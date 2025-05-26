@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 import openpyxl 
 import asyncio
+import requests
 
 
 # mysql = MySQL()
@@ -70,7 +71,7 @@ async def get_masterdata_upload():
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
 
-    request.post('http://deploy-aws.com:5000/master_history/add', json={"master_file_name":onlyfilename,"file_path":newpath})
+    requests.post('http://deploy-aws.com:5000/master_history/add', json={"master_file_name":onlyfilename,"file_path":newpath})
 
     # parse file
     wb = openpyxl.load_workbook(newpath,data_only=True)
