@@ -1721,15 +1721,56 @@ def get_exchangerate_add():
     }
     return jsonify(data)
 
+@app.route('/master_history/listall', methods=['POST'])
+def get_masterhistory_listall():
+    app.logger.info('/master_history/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from master_pricelist_history')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
 
+@app.route('/master_history/add', methods=['POST'])
+def get_masterhistory_add():
+    app.logger.info('/master_history/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
 
+    sql = "insert into master_pricelist_history(master_file_name,file_path)"
+    sql += " values ("
 
+    if request.form.get('master_file_name') is not None:
+        sql += "'" + request.form.get('master_file_name') + "'"
+    else:
+        sql += "null"
 
+    sql += ","
 
+    if request.form.get('file_path') is not None:
+        sql += "'" + request.form.get('file_path') + "'";
+    else:
+        sql += "null";
 
+    sql += ")"
 
+    print('sql='+sql)
 
+    cursor.execute(sql)
+    conn.commit()
 
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "add master_history":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
 
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
