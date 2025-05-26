@@ -357,6 +357,12 @@ def get_masterdata_update():
     #if request.args.get('detail') is not None:
     #if request.form.get('detail') is not None:
     #if request.form.keys() is not None:
+
+    if request.form.get('isara') is not None:
+        print('there is isara')
+    else
+        print('there is no isara')
+
     if request.form.get('detail') is not None:
         sql += ","
         sql += "detail='test"
