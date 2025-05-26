@@ -360,7 +360,7 @@ def get_masterdata_update():
 
     if request.form.get('isara') is not None:
         print('there is isara')
-    else
+    else:
         print('there is no isara')
 
     if request.form.get('detail') is not None:
