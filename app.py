@@ -1799,7 +1799,7 @@ def get_masterhistory_update():
     sql += " where master_file_id="
     sql += request.form.get('master_file_id')
 
-    sql = sql.replace("update master_pricelist_history set ,", "update master_pricelist_history set ");
+    sql = sql.replace("update master_pricelist_history set ,", "update master_pricelist_history set ")
 
     print('sql='+sql)
 
@@ -2026,6 +2026,78 @@ def get_mastertmp_deleteall():
             }
     }
 
+    return jsonify(data)
+
+@app.route('/company/listall', methods=['POST'])
+def get_company_listall():
+    app.logger.info('/company/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from company')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/company/update', methods=['POST'])
+def get_company_update():
+    app.logger.info('/company/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+
+    sql = "update company set ";
+
+    if request.form.get('company_name') is not None:
+        sql += ","
+        sql += "company_name='"
+        sql += request.form.get('company_name')
+        sql += "'"
+
+    if request.form.get('company_info') is not None:
+        sql += ","
+        sql += "company_info='"
+        sql += request.form.get('company_info')
+        sql += "'"
+
+    if request.form.get('company_phone') is not None:
+        sql += ","
+        sql += "company_phone='"
+        sql += request.form.get('company_phone')
+        sql += "'"
+
+    if request.form.get('company_fax') is not None:
+        sql += ","
+        sql += "company_fax='"
+        sql += request.form.get('company_fax')
+        sql += "'"
+
+    if request.form.get('company_email') is not None:
+        sql += ","
+        sql += "company_email='"
+        sql += request.form.get('company_email')
+        sql += "'"
+
+    if request.form.get('company_pic') is not None:
+        sql += ","
+        sql += "company_pic='"
+        sql += request.form.get('company_pic')
+        sql += "'"
+    sql += " where company_id="
+    sql += request.form.get('company_id')
+    sql = sql.replace("update company set ,", "update company set ")
+
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "update company":
+            {
+                "result": "pass"
+            }
+    }
     return jsonify(data)
 
 
