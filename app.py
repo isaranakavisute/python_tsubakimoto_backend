@@ -69,7 +69,9 @@ async def get_masterdata_upload():
     newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
-    
+
+    request.post('http://deploy-aws.com:5000/master_history/add', json={"master_file_name":onlyfilename,"file_path":newpath})
+
     # parse file
     wb = openpyxl.load_workbook(newpath,data_only=True)
     ws = wb.active
