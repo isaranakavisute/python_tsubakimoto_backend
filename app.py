@@ -1845,6 +1845,71 @@ def get_masterhistory_delete():
     }
     return jsonify(data)
 
+@app.route('/user/listall', methods=['POST'])
+def get_user_listall():
+    app.logger.info('/user/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from user')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/user/delete', methods=['POST'])
+def get_user_delete():
+    app.logger.info('/user/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    sql = "delete from user where user_id="+request.form.get('id')
+    cursor.execute(sql)
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete user":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/user/add', methods=['POST'])
+def get_user_add():
+    app.logger.info('/user/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    sql = "insert into user(email,password,access_type,name_surname,company_name) values ('" + request.form.get('usr') + "','" + request.form.get('pwd') + "','" + request.form.get('access') + "','" + request.form.get('name') + "','" + request.form.get('company') + "')";
+    cursor.execute(sql)
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "add user":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/user/update', methods=['POST'])
+def get_user_update():
+    app.logger.info('/user/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    sql = "update user set email='"+request.form.get('usr')+"',password='"+request.form.get('pwd')+"',access_type='"+request.form.get('access')+"',name_surname='"+request.form.get('name')+"',company_name='"+request.form.get('company')+"' where user_id="+request.form.get('id')
+    cursor.execute(sql)
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "update user":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
 
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
