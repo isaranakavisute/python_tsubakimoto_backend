@@ -2929,7 +2929,8 @@ async def get_cost_upload():
     for row in range(3, ws.max_row+1):
         sql="insert into cost(category,part_no,model_no,unit,manufacturer_suggested_retail_price,sub_price_list)";
         sql += " values (";
-        for column in range(1, ws.max_column+1):
+        # for column in range(1, ws.max_column+1):
+        for column in range(1, 7):
             val = ws.cell(row,column).value
             if val is str:
                 val = val.replace('\n','')
@@ -2937,7 +2938,7 @@ async def get_cost_upload():
                 val = val.replace('\t','')
             elif val is None or val == '#VALUE!':
                 val = "";
-            if column < ws.max_column:
+            if column < 6:
                 sql += "'"
                 sql += str(val);
                 sql += "',"
