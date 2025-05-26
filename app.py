@@ -1815,6 +1815,33 @@ def get_masterhistory_update():
     }
     return jsonify(data)
 
+@app.route('/master_history/delete', methods=['POST'])
+def get_masterhistory_delete():
+    app.logger.info('/master_history/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from master_pricelist_history";
+    sql += " where master_file_id="
+    sql += request.form.get('master_file_id')
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "delete master_history":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
 
 # In-memory data store
 # items = [{"id": 1, "name": "This is item 1"}, {"id": 2, "name": "This is item 2"}]
