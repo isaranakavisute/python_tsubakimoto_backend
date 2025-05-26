@@ -2607,7 +2607,7 @@ def get_updatemaster_add():
     sql += "supplier_name,";
     sql += "stock_reference,";
     sql += "cutting_assembly,";
-    sql += "detail)";
+    sql += "detail,Id)";
     sql += " values (";
 
     sql += "'"
@@ -2825,6 +2825,11 @@ def get_updatemaster_add():
         sql += request.form.get('detail')
     sql += "'"
 
+    sql += ','
+    if request.form.get('Id') is not None:
+        sql += request.form.get('Id')
+
+
     sql += ")";
 
     print('sql='+sql)
@@ -2887,6 +2892,91 @@ def get_cost_deleteall():
     data = cursor.fetchall()
     cursor.close()
     conn.close()
+    return jsonify(data)
+
+@app.route('/cost/upload', methods=['POST'])
+async def get_cost_upload():
+    app.logger.info('/cost/upload')
+
+    #request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # upload file
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ','_')
+    onlyfilename = onlyfilename.replace('-','_')
+    onlyfileext = fullfilename.split('.')[1];
+    print(request.files);
+    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    app.logger.info("uploaded new file path : "+newpath)
+    file.save(newpath)
+
+    # parse file
+    wb = openpyxl.load_workbook(newpath,data_only=True)
+    ws = wb.active
+    print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
+    for row in range(3, ws.max_row+1):
+        sql="insert into cost(category,part_no,model_no,unit,manufacturer_suggested_retail_price,sub_price_list)";
+        sql += " values (";
+        for column in range(1, ws.max_column+1):
+            val = ws.cell(row,column).value
+            if val is str:
+                val = val.replace('\n','')
+                val = val.replace('\r','')
+                val = val.replace('\t','')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "')"
+                if val == "":
+                    print("", end="")
+                else:
+                    print(val, end="")
+        print()
+
+        #print sql for reviewing
+        print("sql="+sql);
+
+        #run sql
+        cursor.execute(sql)
+
+        print()
+        print()
+
+
+
+    data = {
+        "status":"true",
+        "upload_cost":
+            {
+                "result": "pass",
+                "full uploaded file path": newpath
+            }
+    }
+
+    #commit changes to databse
+    conn.commit()
+
+    #return mysql connection to pool
+    cursor.close()
+    conn.close()
+
+    await asyncio.sleep(5)
+
+    #return json response
     return jsonify(data)
 
 
