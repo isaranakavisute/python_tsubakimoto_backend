@@ -376,6 +376,7 @@ def get_masterdata_update():
     print('sql='+sql)
 
     cursor.execute(sql)
+    conn.commit()
 
     cursor.close()
     conn.close()
