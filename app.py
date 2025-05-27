@@ -1532,18 +1532,21 @@ def get_exchangerate_update():
 
     if request.form.get('rate_remark') is not None:
         sql += ","
-        sql += "rate_remark="
+        sql += "rate_remark='"
         sql += request.form.get('rate_remark')
+        sql += "'"
 
     if request.form.get('file_name') is not None:
         sql += ","
-        sql += "file_name="
+        sql += "file_name='"
         sql += request.form.get('file_name')
+        sql += "'"
 
     if request.form.get('rate_path') is not None:
         sql += ","
-        sql += "rate_path="
+        sql += "rate_path='"
         sql += request.form.get('rate_path')
+        sql += "'"
 
     sql += " where rate_id="
     sql += request.form.get('rate_id')
