@@ -28,7 +28,7 @@ app = Flask(__name__)
 
 connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="my_pool",
-    pool_size=5000,
+    pool_size=30,
     user="isara",
     password="1234",
     host="localhost",
