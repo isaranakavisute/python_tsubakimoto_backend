@@ -38,7 +38,7 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
 
 @app.route('/')
 def hello_world():
-    return jsonify(message="Hello, World!")
+    return jsonify(message="This is  a test")
 
 @app.route('/test_db', methods=['GET'])
 def get_test_db():
