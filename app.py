@@ -3142,12 +3142,12 @@ def get_newsinfo_update():
     sql += " where news_id="
     sql += request.form.get('news_id')
 
-    sql = sql.replace("update news_info set ,", "update news_info set ");
+    sql = sql.replace("update news_info set ,", "update news_info set ")
 
     print('sql='+sql)
 
-    cursor.execute(sql)
-    conn.commit()
+    # cursor.execute(sql)
+    # conn.commit()
 
     cursor.close()
     conn.close()
