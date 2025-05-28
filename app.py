@@ -2992,19 +2992,113 @@ async def get_cost_upload():
     #return json response
     return jsonify(data)
 
+@app.route('/quotation_file_record/listall', methods=['POST'])
+def get_quotationfilerecord_listall():
+    app.logger.info('/quotation_file_record/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from quotation_file_record')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
 
+app.route('/quotation_file_record/delete', methods=['POST'])
+def get_quotationfilerecord_delete():
+    app.logger.info('/quotation_file_record/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
 
+    sql = "delete from quotation_file_record where ";
+    sql += "quot_file_id=";
+    sql += request.form.get('quot_file_id');
 
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "delete quotationfilerecord by id":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
 
+@app.route('/quotation_file_record/upload', methods=['POST'])
+async def get_quotationfilerecord_upload():
+    app.logger.info('/quotation_file_record/upload')
 
+    # upload file
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ','_')
+    onlyfilename = onlyfilename.replace('-','_')
+    onlyfileext = fullfilename.split('.')[1];
+    print(request.files);
+    newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    app.logger.info("uploaded new file path : "+newpath)
+    file.save(newpath)
 
+    data = {
+        "status":"true",
+        "upload_quotationfilerecord":
+            {
+                "result": "pass",
+                "full uploaded file path": newpath
+            }
+    }
 
+    #return json response
+    return jsonify(data)
 
+@app.route('/quotation_file_record/download', methods=['POST'])
+def get_quotationfilerecord_download():
+    app.logger.info('/quotation_file_record/download')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
 
+    sql = "select * from quotation_file_record where "
+    sql += "quot_file_id=";
+    sql += request.form.get('quot_file_id')
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    data = {
+        "status":"true",
+        "show download link":
+            {
+                "document_name": results[0].quot_name,
+                "document_path": results[0].quot_path,
+                "document_download_link": "http://deploy-aws.com:5000/downloadfiletocomputer?fileurl="+results[0].quot_name
+            }
+    }
+    return jsonify(data)
 
+@app.route('/news_info/listall', methods=['POST'])
+def get_newsinfo_listall():
+    app.logger.info('/news_info/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
 
+    sql = "select cast(news_id as char) as news_id,"
+    sql += "cast(title as char) as title,"
+    sql += "cast(content as char) as content,"
+    sql += "cast(news_date as char) as news_date,"
+    sql += "cast(showing_order as char) as showing_order,"
+    sql += "cast(short_content as char) as short_content,"
+    sql += "cast(short_content as char) as short_content,"
+    sql += "cast(news_up_time as char) as news_up_time"
+    sql += " from news_info"
 
-
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
 
 
 
