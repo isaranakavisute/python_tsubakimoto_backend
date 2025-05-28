@@ -2486,7 +2486,7 @@ def get_exchange_rate_history_download():
             {
                 "document_name": results[0].rate_doc_name,
                 "document_path": results[0].rate_doc_path,
-                "document_download_link": "http://deploy-aws.com:5000/downloadfiletocomputer?fileurl="+results[0].rate_doc_name
+                "document_download_link": "http://deploy-aws.com:3006/downloadfiletocomputer?fileurl="+results[0].rate_doc_name
             }
     }
     return jsonify(data)
@@ -3073,7 +3073,7 @@ def get_quotationfilerecord_download():
             {
                 "document_name": results[0].quot_name,
                 "document_path": results[0].quot_path,
-                "document_download_link": "http://deploy-aws.com:5000/downloadfiletocomputer?fileurl="+results[0].quot_name
+                "document_download_link": "http://deploy-aws.com:3006/downloadfiletocomputer?fileurl="+results[0].quot_name
             }
     }
     return jsonify(data)
@@ -3096,14 +3096,157 @@ def get_newsinfo_listall():
 
     cursor.execute(sql)
     data = cursor.fetchall()
-    print(jsonify(data))
+    print(data)
     cursor.close()
     conn.close()
     return jsonify(data)
 
+@app.route('/news_info/update', methods=['POST'])
+def get_newsinfo_update():
+    app.logger.info('/news_info/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
 
+    sql = "update news_info set "
 
+    if request.form.get('title') is not None:
+        sql += ","
+        sql += "title='"
+        sql += request.form.get('title')
+        sql += "'"
 
+    if request.form.get('content') is not None:
+        sql += ","
+        sql += "content='"
+        sql += request.form.get('content')
+        sql += "'"
+
+    sql += "',";
+    sql += "news_date='";
+
+    sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
+
+    sql += "'"
+
+    if request.form.get('showing_order') is not None:
+        sql += ","
+        sql += "showing_order="
+        sql += request.form.get('showing_order')
+
+    if request.form.get('short_content') is not None:
+        sql += ","
+        sql += "short_content='"
+        sql += request.form.get('short_content')
+        sql += "'"
+
+    sql += " where news_id="
+    sql += request.form.get('news_id')
+
+    sql = sql.replace("update news_info set ,", "update news_info set ");
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "update news_info":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/news_info/delete', methods=['POST'])
+def get_newsinfo_delete():
+    app.logger.info('/news_info/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from news_info"
+    sql += " where news_id="
+    sql += request.form.get('news_id')
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "delete news_info":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/news_info/add', methods=['POST'])
+def get_newsinfo_add():
+    app.logger.info('/news_info/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into news_info(title,content,news_date,showing_order,short_content)";
+    sql += " values ("
+
+    sql += "'"
+    if request.form.get('title') is not None:
+        sql += request.form.get('title')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('content') is not None:
+        sql += request.form.get('content')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
+    sql += "'"
+
+    sql += ","
+
+    if request.form.get('showing_order') is not None:
+        sql += request.form.get('showing_order')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('short_content') is not None:
+        sql += request.form.get('short_content')
+    sql += "'"
+
+    sql += ")"
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "add news_info":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
 
 
 # In-memory data store
