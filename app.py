@@ -3096,6 +3096,7 @@ def get_newsinfo_listall():
 
     cursor.execute(sql)
     data = cursor.fetchall()
+    print(data)
     cursor.close()
     conn.close()
     return jsonify(data)
