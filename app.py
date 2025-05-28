@@ -3121,11 +3121,9 @@ def get_newsinfo_update():
         sql += request.form.get('content')
         sql += "'"
 
-    sql += "',";
+    sql += ",";
     sql += "news_date='";
-
     sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
-
     sql += "'"
 
     if request.form.get('showing_order') is not None:
@@ -3146,8 +3144,8 @@ def get_newsinfo_update():
 
     print('sql='+sql)
 
-    # cursor.execute(sql)
-    # conn.commit()
+    cursor.execute(sql)
+    conn.commit()
 
     cursor.close()
     conn.close()
