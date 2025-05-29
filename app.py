@@ -2905,8 +2905,12 @@ def get_updatemaster_add():
     sql += "'"
 
     sql += ','
+    
     if request.form.get('Id') is not None:
         sql += request.form.get('Id')
+    else:
+        sql += "null"
+    
 
 
     sql += ")";
@@ -2928,7 +2932,7 @@ def get_updatemaster_add():
     }
     return jsonify(data)
 
-app.route('/update_master/delete', methods=['POST'])
+@app.route('/update_master/delete', methods=['POST'])
 def get_updatemaster_delete():
     app.logger.info('/update_master/delete')
     conn = connection_pool.get_connection()
