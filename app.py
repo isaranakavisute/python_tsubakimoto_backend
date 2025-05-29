@@ -1885,7 +1885,43 @@ def get_user_add():
     app.logger.info('/user/add')
     conn = connection_pool.get_connection()
     cursor = conn.cursor()
-    sql = "insert into user(email,password,access_type,name_surname,company_name) values ('" + request.form.get('usr') + "','" + request.form.get('pwd') + "','" + request.form.get('access') + "','" + request.form.get('name') + "','" + request.form.get('company') + "')";
+    sql = "insert into user(email,password,access_type,name_surname,company_name) values ("
+
+    sql += "'"
+    if request.form.get('usr') is not None:
+     sql += request.form.get('usr')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('pwd') is not None:
+        sql += request.form.get('pwd')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('access') is not None:
+        sql += request.form.get('access')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('name') is not None:
+        sql += request.form.get('name')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('company') is not None:
+        sql += request.form.get('company')
+    sql += "'"
+
+    sql += ")"
+
     cursor.execute(sql)
     conn.commit()
     cursor.close()
