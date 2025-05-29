@@ -1904,7 +1904,42 @@ def get_user_update():
     app.logger.info('/user/update')
     conn = connection_pool.get_connection()
     cursor = conn.cursor()
-    sql = "update user set email='"+request.form.get('usr')+"',password='"+request.form.get('pwd')+"',access_type='"+request.form.get('access')+"',name_surname='"+request.form.get('name')+"',company_name='"+request.form.get('company')+"' where user_id="+request.form.get('id')
+    sql = "update user set "
+
+    if request.form.get('usr') is not None:
+        sql += ","
+        sql += "email='"
+        sql += request.form.get('usr')
+        sql += "'"
+
+    if request.form.get('pwd') is not None:
+        sql += ","
+        sql += "password='"
+        sql += request.form.get('pwd')
+        sql += "'"
+
+    if request.form.get('access') is not None:
+        sql += ","
+        sql += "access_type='"
+        sql += request.form.get('access')
+        sql += "'"
+
+    if request.form.get('name') is not None:
+        sql += ","
+        sql += "name_surname='"
+        sql += request.form.get('name')
+        sql += "'"
+
+    if request.form.get('company') is not None:
+        sql += ","
+        sql += "company_name='"
+        sql += request.form.get('company')
+        sql += "'"
+
+    sql += " where user_id="+request.form.get('id')
+    sql = sql.replace("update user set ,", "update user set ")
+
+    print("sql="+sql)
     cursor.execute(sql)
     conn.commit()
     cursor.close()
