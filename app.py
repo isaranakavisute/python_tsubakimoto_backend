@@ -31,7 +31,7 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_size=30,
     user="isara",
     password="1234",
-    host="localhost",
+    host="deploy-aws.com",
     port=3307,  #3306
     database="tsubakimoto" #akt1
 )
@@ -787,6 +787,7 @@ def get_masterformula_deleteall():
     cursor = conn.cursor()
     cursor.execute('delete from master_tsubakimoto_formula')
     data = cursor.fetchall()
+    conn.commit()
     cursor.close()
     conn.close()
     data = {
@@ -995,7 +996,7 @@ def get_masterformula_update():
     sql += " where Id="
     sql += request.form.get('Id')
 
-    sql = sql.replace('update master_tsubakimoto set ,','update master_tsubakimoto set ')
+    sql = sql.replace('update master_tsubakimoto_formula set ,','update master_tsubakimoto_formula set ')
     print('sql='+sql)
 
     cursor.execute(sql)
@@ -1867,6 +1868,7 @@ def get_user_delete():
     cursor = conn.cursor()
     sql = "delete from user where user_id="+request.form.get('id')
     cursor.execute(sql)
+    conn.commit()
     cursor.close()
     conn.close()
     data = {
@@ -1885,6 +1887,7 @@ def get_user_add():
     cursor = conn.cursor()
     sql = "insert into user(email,password,access_type,name_surname,company_name) values ('" + request.form.get('usr') + "','" + request.form.get('pwd') + "','" + request.form.get('access') + "','" + request.form.get('name') + "','" + request.form.get('company') + "')";
     cursor.execute(sql)
+    conn.commit()
     cursor.close()
     conn.close()
     data = {
@@ -1903,6 +1906,7 @@ def get_user_update():
     cursor = conn.cursor()
     sql = "update user set email='"+request.form.get('usr')+"',password='"+request.form.get('pwd')+"',access_type='"+request.form.get('access')+"',name_surname='"+request.form.get('name')+"',company_name='"+request.form.get('company')+"' where user_id="+request.form.get('id')
     cursor.execute(sql)
+    conn.commit()
     cursor.close()
     conn.close()
     data = {
@@ -3245,6 +3249,339 @@ def get_newsinfo_add():
             }
     }
     return jsonify(data)
+
+@app.route('/quotation_list/listall', methods=['POST'])
+def get_quotationlist_listall():
+    app.logger.info('/quotation_list/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    sql = "select * from quotation_list"
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/quotation_list/update', methods=['POST'])
+def get_quotationlist_update():
+    app.logger.info('/quotation_list/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "update quotation_list set "
+
+    if request.form.get('quot_no') is not None:
+        sql += ","
+        sql += "quot_no='"
+        sql += request.form.get('quot_no')
+        sql += "'"
+
+    if request.form.get('user_id') is not None:
+        sql += ","
+        sql += "user_id="
+        sql += request.form.get('user_id')
+
+    sql += ",";
+    sql += "update_time='";
+    sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
+    sql += "'"
+
+    if request.form.get('quot_stat') is not None:
+        sql += ","
+        sql += "quot_stat='"
+        sql += request.form.get('quot_stat')
+        sql += "'"
+
+    if request.form.get('quot_ver') is not None:
+        sql += ","
+        sql += "quot_ver="
+        sql += request.form.get('quot_ver')
+
+
+    sql += " where  quot_id="
+    sql += request.form.get(' quot_id')
+
+    sql = sql.replace("update quotation_list set ,", "update quotation_list set ")
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "update quotation_list":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/quotation_list/delete', methods=['POST'])
+def get_quotationlist_delete():
+    app.logger.info('/quotation_list/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete quotation_list"
+    sql += " where  quot_id="
+    sql += request.form.get(' quot_id')
+
+    sql = sql.replace("update quotation_list set ,", "update quotation_list set ")
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "delete quotation_list":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/quotation_list/add', methods=['POST'])
+def get_quotationlist_add():
+    app.logger.info('/quotation_list/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into quotation_list(quot_no,user_id,update_time,quot_stat,quot_ver)";
+    sql += " values ("
+
+    sql += "'"
+    if request.form.get('quot_no') is not None:
+        sql += request.form.get('quot_no')
+    sql += "'"
+
+    sql += ","
+
+
+    if request.form.get('user_id') is not None:
+        sql += request.form.get('user_id')
+    else:
+        sql += "null"
+
+
+    sql += ","
+
+    sql += "'"
+    sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    if request.form.get('quot_stat') is not None:
+        sql += request.form.get('quot_stat')
+    sql += "'"
+
+    sql += ","
+
+
+    if request.form.get('quot_ver') is not None:
+        sql += request.form.get('quot_ver')
+    else:
+        sql += "null"
+
+    sql += ")"
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "add quotation_list":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+@app.route('/quotation_product/listall', methods=['POST'])
+def get_quotation_listall():
+    app.logger.info('/quotation_product/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    sql = "select * from quotation_product"
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
+@app.route('/quotation_product/getquotationbyid', methods=['POST'])
+def get_quotation_getquotationbyid():
+    app.logger.info('/quotation_product/getquotationbyid')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    sql = "select * from quotation_product where quotation_product_id=" + request.form.get('quotation_product_id')
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+@app.route('/quotation_product/update', methods=['POST'])
+def get_quotationproduct_update():
+    app.logger.info('/quotation_product/update')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "update quotation_product set "
+
+    if request.form.get('quot_id') is not None:
+        sql += ","
+        sql += "quot_id="
+        sql += request.form.get('quot_id')
+
+
+    if request.form.get('Id') is not None:
+        sql += ","
+        sql += "Id="
+        sql += request.form.get('Id')
+
+    if request.form.get('quantity') is not None:
+        sql += ","
+        sql += "quantity="
+        sql += request.form.get('quantity')
+
+    if request.form.get('unit_price') is not None:
+        sql += ","
+        sql += "unit_price="
+        sql += request.form.get('unit_price')
+
+    if request.form.get('total_price') is not None:
+        sql += ","
+        sql += "total_price="
+        sql += request.form.get('total_price')
+
+    sql += " where quotation_product_id="
+    sql += request.form.get('quotation_product_id')
+
+    sql = sql.replace("update quotation_product set ,", "update quotation_product set ")
+
+    print('sql='+sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status":"true",
+        "update quotation_product":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+@app.route('/quotation_product/delete', methods=['POST'])
+def get_quotationproduct_delete():
+    app.logger.info('/quotation_product/delete')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "delete from quotation_product"
+    sql += " where quotation_product_id="
+    sql += request.form.get('quotation_product_id')
+
+    print('sql=' + sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status": "true",
+        "delete quotation_product":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+
+@app.route('/quotation_product/add', methods=['POST'])
+def get_quotationproduct_add():
+    app.logger.info('/quotation_product/add')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    sql = "insert into quotation_product(quot_id,Id,quantity,unit_price,total_price) values (";
+
+    if request.form.get('quot_id') is not None:
+        sql += request.form.get('quot_id')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('Id') is not None:
+        sql += request.form.get('Id')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('quantity') is not None:
+        sql += request.form.get('quantity')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('unit_price') is not None:
+        sql += request.form.get('unit_price')
+    else:
+        sql += "null"
+
+    sql += ","
+
+    if request.form.get('total_price') is not None:
+        sql += request.form.get('total_price')
+    else:
+        sql += "null"
+
+    sql += ")"
+
+    print('sql=' + sql)
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    data = {
+        "status": "true",
+        "add quotation_product":
+            {
+                "result": "pass"
+            }
+    }
+    return jsonify(data)
+
+
 
 
 # In-memory data store
