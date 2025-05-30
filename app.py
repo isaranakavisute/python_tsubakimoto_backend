@@ -3200,10 +3200,16 @@ def get_newsinfo_update():
         sql += request.form.get('content')
         sql += "'"
 
-    sql += ",";
-    sql += "news_date='";
-    sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
-    sql += "'"
+    if request.form.get('news_date') is not None:
+        sql += ","
+        sql += "news_date='"
+        sql += request.form.get('news_date')
+        sql += "'"
+
+    # sql += ",";
+    # sql += "news_date='";
+    # sql += datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y-%m-%d')
+    # sql += "'"
 
     if request.form.get('showing_order') is not None:
         sql += ","
