@@ -1335,6 +1335,21 @@ async def get_exchangerate_upload():
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
 
+    sql = "insert into exchange_rate_history(rate_doc_name,rate_doc_path) values ("
+    sql += "'"
+    sql += onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S')
+    sql += "'"
+    sql += ","
+    sql += "'"
+    sql += newpath
+    sql += "'"
+    sql += ")"
+
+    print("sql="+sql)
+
+    cursor.execute(sql)
+
+
     # parse file
     wb = openpyxl.load_workbook(newpath,data_only=True)
     ws = wb.active
@@ -3082,7 +3097,7 @@ def get_quotationfilerecord_listall():
     conn.close()
     return jsonify(data)
 
-app.route('/quotation_file_record/delete', methods=['POST'])
+@app.route('/quotation_file_record/delete', methods=['POST'])
 def get_quotationfilerecord_delete():
     app.logger.info('/quotation_file_record/delete')
     conn = connection_pool.get_connection()
@@ -3120,6 +3135,35 @@ async def get_quotationfilerecord_upload():
     newpath = "uploaded_files/" + onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
     app.logger.info("uploaded new file path : "+newpath)
     file.save(newpath)
+
+    sql = "insert into quotation_file_record(quot_name,quot_path,quot_id) values ("
+
+    sql += "'"
+    sql += onlyfilename  + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime('%Y_%m_%d_%H_%M_%S')
+    sql += "'"
+
+    sql += ","
+
+    sql += "'"
+    sql += newpath
+    sql += "'"
+
+    sql += ","
+
+    sql += "1"
+
+    sql += ")"
+
+    print("sql="+sql)
+
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(sql)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
 
     data = {
         "status":"true",
@@ -3381,7 +3425,7 @@ def get_quotationlist_update():
 
 
     sql += " where  quot_id="
-    sql += request.form.get(' quot_id')
+    sql += request.form.get('quot_id')
 
     sql = sql.replace("update quotation_list set ,", "update quotation_list set ")
 
