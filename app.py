@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 #from flaskext.mysql import MySQL
 import mysql.connector.pooling
 from datetime import datetime
@@ -11,6 +12,7 @@ import requests
 # mysql = MySQL()
 
 app = Flask(__name__)
+CORS(app)
 
 # app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1';
 # app.config['MYSQL_DATABASE_PORT'] = 3307;
@@ -24,8 +26,6 @@ app = Flask(__name__)
 # connection = my_database.connect()
 # cursor = connection.cursor()
 
-
-
 connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="my_pool",
     pool_size=30,
@@ -33,7 +33,7 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     password="1234",
     host="127.0.0.1", #"deploy-aws.com",
     port=3306,  #3307
-    database= "nms" #"tsubakimoto"
+    database= "nms", #"tsubakimoto",
 )
 
 @app.route('/')
