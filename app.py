@@ -31,14 +31,29 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_size=30,
     user="isara",
     password="1234",
-    host="deploy-aws.com",
-    port=3307,  #3306
-    database="tsubakimoto" #akt1
+    host="127.0.0.1", #"deploy-aws.com",
+    port=3306,  #3307
+    database= "nms" #"tsubakimoto"
 )
 
 @app.route('/')
 def hello_world():
     return jsonify(message="This is  a test")
+
+@app.route('/test_nms', methods=['GET'])
+def test_nms():
+    return jsonify(message="This is nms")
+
+@app.route('/nms/listall', methods=['POST'])
+def nms_listall():
+    app.logger.info('/nms/listall')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from payslip')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
 
 @app.route('/test_db', methods=['GET'])
 def get_test_db():
