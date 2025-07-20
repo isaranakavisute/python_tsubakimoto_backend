@@ -66,6 +66,17 @@ def nms_gettemptable():
     conn.close()
     return jsonify(data)
 
+@app.route('/nms/get_usertemp_table', methods=['POST'])
+def nms_getusertemptable():
+    app.logger.info('/nms/get_usertemp_table')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from user_upload_temp')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
 @app.route('/nms/upload_file', methods=['POST'])
 def nms_uploadfile():
     app.logger.info('/nms/upload_file')
@@ -247,6 +258,201 @@ def nms_writeprd():
 
     # return json response
     return jsonify(data)
+
+
+
+
+
+@app.route('/nms/upload_user_file', methods=['POST'])
+def nms_uploaduserfile():
+    app.logger.info('/nms/upload_user_file')
+
+    # request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # clear table
+    sql = "delete from user_upload_temp";
+    cursor.execute(sql)
+
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ', '_')
+    onlyfilename = onlyfilename.replace('-', '_')
+    onlyfileext = fullfilename.split('.')[1];
+    print(request.files);
+    newpath = "uploaded_files/" + onlyfilename + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime(
+        '%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    app.logger.info("uploaded new file path : " + newpath)
+    file.save(newpath)
+
+    # parse file
+    wb = openpyxl.load_workbook(newpath, data_only=True)
+    ws = wb.active
+    print('Total number of rows: ' + str(ws.max_row) + '. And total number of columns: ' + str(ws.max_column))
+    for row in range(2, ws.max_row + 1):
+
+
+
+        sql = "insert into user_upload_temp(id_card,title,name,surname,company,password)";
+        sql += " values (";
+        for column in range(1, ws.max_column + 1):
+            val = ws.cell(row, column).value
+            if val is str:
+                val = val.replace('\n', '')
+                val = val.replace('\r', '')
+                val = val.replace('\t', '')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "')"
+                if val == "":
+                    print("", end="")
+                else:
+                    print(val, end="")
+        print()
+
+        # print sql for reviewing
+        print("sql=" + sql);
+
+        # run sql
+        cursor.execute(sql)
+
+        print()
+        print()
+
+    # commit changes to databse
+    conn.commit()
+
+    # await asyncio.sleep(5)
+
+    cursor.execute('select * from user_upload_temp')
+    data = cursor.fetchall()
+    print(data)
+
+    if request.form.get('publication_date') is not None and request.form.get('publication_date') != "":
+        data = {
+        "status": "true",
+        "upload_excel":
+            {
+                "result": "pass",
+                "full_uploaded_file_path": newpath
+            },
+        "publication_date": request.form.get('publication_date'),
+        "uploaded_data": data
+    }
+    else:
+        data = {
+            "status": "true",
+            "upload_excel":
+                {
+                    "result": "pass",
+                    "full_uploaded_file_path": newpath
+                },
+            "publication_date": "N/A",
+            "uploaded_data": data
+        }
+
+    # return mysql connection to pool
+    cursor.close()
+    conn.close()
+
+    # return json response
+    return jsonify(data)
+
+
+@app.route('/nms/write_user_prd', methods=['POST'])
+def nms_writeuserprd():
+    app.logger.info('/nms/write_prd')
+
+    # request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # parse file
+    wb = openpyxl.load_workbook(request.form.get('uploadpath'), data_only=True)
+    ws = wb.active
+    print('Total number of rows: ' + str(ws.max_row) + '. And total number of columns: ' + str(ws.max_column))
+    for row in range(2, ws.max_row + 1):
+        sql = "insert into user_upload(id_card,title,name,surname,company,password)";
+        sql += " values (";
+        for column in range(1, ws.max_column + 1):
+            val = ws.cell(row, column).value
+            if val is str:
+                val = val.replace('\n', '')
+                val = val.replace('\r', '')
+                val = val.replace('\t', '')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "')"
+                if val == "":
+                    print("", end="")
+                else:
+                    print(val, end="")
+        print()
+
+        # print sql for reviewing
+        print("sql=" + sql);
+
+        # run sql
+        cursor.execute(sql)
+
+        print()
+        print()
+
+    # commit changes to databse
+    conn.commit()
+
+    # await asyncio.sleep(5)
+
+    cursor.execute('select * from user_upload')
+    data = cursor.fetchall()
+    print(data)
+
+
+    data = {
+        "status": "true",
+        "upload_excel":
+            {
+                "result": "pass",
+                "full uploaded file path": request.form.get('uploadpath')
+            },
+        "uploaded_data": data
+    }
+
+    # return mysql connection to pool
+    cursor.close()
+    conn.close()
+
+    # return json response
+    return jsonify(data)
+
+
+
+
+
 
 @app.route('/test_db', methods=['GET'])
 def get_test_db():
