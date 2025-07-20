@@ -55,6 +55,17 @@ def nms_listall():
     conn.close()
     return jsonify(data)
 
+@app.route('/nms/get_temp_table', methods=['POST'])
+def nms_gettemptable():
+    app.logger.info('/nms/get_temp_table')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from nms_upload_temp')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
 @app.route('/nms/upload_file', methods=['POST'])
 def nms_uploadfile():
     app.logger.info('/nms/upload_file')
