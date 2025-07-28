@@ -66,6 +66,17 @@ def nms_gettemptable():
     conn.close()
     return jsonify(data)
 
+@app.route('/nms/get_payslip_temp_table', methods=['POST'])
+def nms_getpaysliptemptable():
+    app.logger.info('/nms/get_temp_table')
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+    cursor.execute('select * from payslip_upload_temp')
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
+
 @app.route('/nms/get_usertemp_table', methods=['POST'])
 def nms_getusertemptable():
     app.logger.info('/nms/get_usertemp_table')
@@ -182,6 +193,130 @@ def nms_uploadfile():
     # return json response
     return jsonify(data)
 
+@app.route('/nms/upload_payslip', methods=['POST'])
+def nms_uploadpaylsipfile():
+    app.logger.info('/nms/upload_payslip')
+
+    # request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # clear table
+    sql = "delete from payslip_upload_temp";
+    cursor.execute(sql)
+    conn.commit()
+
+    file = request.files['file']
+    fullfilename = file.filename
+    onlyfilename = fullfilename.split('.')[0];
+    onlyfilename = onlyfilename.replace(' ', '_')
+    onlyfilename = onlyfilename.replace('-', '_')
+    onlyfileext = fullfilename.split('.')[1];
+    print(request.files);
+    newpath = "uploaded_files/" + onlyfilename + "_" + datetime.now(pytz.timezone('Asia/Bangkok')).strftime(
+        '%Y_%m_%d_%H_%M_%S') + "." + onlyfileext;
+    app.logger.info("uploaded new file path : " + newpath)
+    file.save(newpath)
+
+    # parse file
+    wb = openpyxl.load_workbook(newpath, data_only=True)
+    ws = wb.active
+    print('Total number of rows: ' + str(ws.max_row) + '. And total number of columns: ' + str(ws.max_column))
+
+    salary_month = ws.cell(13, 3).value
+    salary_month = salary_month.replace('\n', '')
+    salary_month = salary_month.replace('\r', '')
+    salary_month = salary_month.replace('\t', '')
+    salary_month = salary_month.strip()
+
+    if request.form.get('publication_date') is not None and request.form.get('publication_date') != "":
+     publication_date = request.form.get('publication_date')
+    else:
+     publication_date = ""
+
+    for row in range(19, ws.max_row):
+        sql = "insert into payslip_upload_temp(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22, col23, col24, col25, col26, col27, col28, col29, col30, col31, col32, col33, col34, col35, col36, col37, col38, col39, col40, col41, col42, col43, col44, col45, col46, col47, col48, col49, col50, col51, col52, col53, col54, col55, col56, col57, col58, col59, col60, col61, col62, col63, col64, col65, col66, col67, col68, col69, col70, col71, col72, col73, col74, col75, col76, col77, col78, col79, col80, col81, col82, col83, col84, col85, col86, col87, col88, col89, col90, col91, col92, col93, col94, col95, col96, col97, col98, col99, col100, col101, col102, col103, col104, col105, col106, col107, col108, col109, col110, col111, col112, col113, col114, col115, col116, col117, col118, col119, col120, col121, col122, col123, col124, col125, col126, col127, col128, col129, col130, col131, col132, col133, col134, col135, col136, col137, col138, col139, col140, col141, col142, col143, col144, col145, col146, salary_month,publication_date)";
+        sql += " values (";
+        for column in range(1, ws.max_column + 1):
+            val = ws.cell(row, column).value
+            if val is str:
+                val = val.replace('\n', '')
+                val = val.replace('\r', '')
+                val = val.replace('\t', '')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "','"
+                sql += salary_month
+                sql += "','"
+                sql += publication_date
+                sql += "'"
+                sql += ")"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+                print(salary_month, end="")
+        print()
+
+        # print sql for reviewing
+        print("sql=" + sql);
+
+        # run sql
+        cursor.execute(sql)
+
+        print()
+        print()
+
+    # commit changes to databse
+    conn.commit()
+
+    # await asyncio.sleep(5)
+
+    cursor.execute('select * from payslip_upload_temp')
+    data = cursor.fetchall()
+    print(data)
+
+    if request.form.get('publication_date') is not None and request.form.get('publication_date') != "":
+        data = {
+        "status": "true",
+        "upload_excel":
+            {
+                "result": "pass",
+                "full_uploaded_file_path": newpath
+            },
+        "publication_date": request.form.get('publication_date'),
+        "uploaded_data": data
+    }
+    else:
+        data = {
+            "status": "true",
+            "upload_excel":
+                {
+                    "result": "pass",
+                    "full_uploaded_file_path": newpath
+                },
+            "publication_date": "N/A",
+            "uploaded_data": data
+        }
+
+    # return mysql connection to pool
+    cursor.close()
+    conn.close()
+
+    # return json response
+    return jsonify(data)
+
 @app.route('/nms/write_prd', methods=['POST'])
 def nms_writeprd():
     app.logger.info('/nms/write_prd')
@@ -259,8 +394,100 @@ def nms_writeprd():
     # return json response
     return jsonify(data)
 
+@app.route('/nms/write_payslip_prd', methods=['POST'])
+def nms_writepayslipprd():
+    app.logger.info('/nms/write_payslip_prd')
+
+    # request mysql connection from pool
+    conn = connection_pool.get_connection()
+    cursor = conn.cursor()
+
+    # parse file
+    wb = openpyxl.load_workbook(request.form.get('uploadpath'), data_only=True)
+    ws = wb.active
+    print('Total number of rows: ' + str(ws.max_row) + '. And total number of columns: ' + str(ws.max_column))
+
+    salary_month = ws.cell(13, 3).value
+    salary_month = salary_month.replace('\n', '')
+    salary_month = salary_month.replace('\r', '')
+    salary_month = salary_month.replace('\t', '')
+    salary_month = salary_month.strip()
+
+    if request.form.get('publication_date') is not None and request.form.get('publication_date') != "":
+        publication_date = request.form.get('publication_date')
+    else:
+        publication_date = ""
+
+    for row in range(19, ws.max_row):
+        sql = "insert into payslip_upload(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22, col23, col24, col25, col26, col27, col28, col29, col30, col31, col32, col33, col34, col35, col36, col37, col38, col39, col40, col41, col42, col43, col44, col45, col46, col47, col48, col49, col50, col51, col52, col53, col54, col55, col56, col57, col58, col59, col60, col61, col62, col63, col64, col65, col66, col67, col68, col69, col70, col71, col72, col73, col74, col75, col76, col77, col78, col79, col80, col81, col82, col83, col84, col85, col86, col87, col88, col89, col90, col91, col92, col93, col94, col95, col96, col97, col98, col99, col100, col101, col102, col103, col104, col105, col106, col107, col108, col109, col110, col111, col112, col113, col114, col115, col116, col117, col118, col119, col120, col121, col122, col123, col124, col125, col126, col127, col128, col129, col130, col131, col132, col133, col134, col135, col136, col137, col138, col139, col140, col141, col142, col143, col144, col145, col146, salary_month,publication_date)";
+        sql += " values (";
+        for column in range(1, ws.max_column + 1):
+            val = ws.cell(row, column).value
+            if val is str:
+                val = val.replace('\n', '')
+                val = val.replace('\r', '')
+                val = val.replace('\t', '')
+            elif val is None or val == '#VALUE!':
+                val = "";
+            if column < ws.max_column:
+                sql += "'"
+                sql += str(val);
+                sql += "',"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+            else:
+                sql += "'"
+                sql += str(val)
+                sql += "','"
+                sql += salary_month
+                sql += "','"
+                sql += publication_date
+                sql += "'"
+                sql += ")"
+                if val == "":
+                    print("", end=",")
+                else:
+                    print(val, end=",")
+                print(salary_month, end="")
+        print()
+
+        # print sql for reviewing
+        print("sql=" + sql);
+
+        # run sql
+        cursor.execute(sql)
+
+        print()
+        print()
+
+    # commit changes to databse
+    conn.commit()
+
+    # await asyncio.sleep(5)
+
+    cursor.execute('select * from payslip_upload')
+    data = cursor.fetchall()
+    print(data)
 
 
+    data = {
+        "status": "true",
+        "upload_excel":
+            {
+                "result": "pass",
+                "full uploaded file path": request.form.get('uploadpath')
+            },
+        "uploaded_data": data
+    }
+
+    # return mysql connection to pool
+    cursor.close()
+    conn.close()
+
+    # return json response
+    return jsonify(data)
 
 
 @app.route('/nms/upload_user_file', methods=['POST'])
@@ -274,6 +501,7 @@ def nms_uploaduserfile():
     # clear table
     sql = "delete from user_upload_temp";
     cursor.execute(sql)
+    conn.commit()
 
     file = request.files['file']
     fullfilename = file.filename
@@ -295,9 +523,11 @@ def nms_uploaduserfile():
 
 
 
-        sql = "insert into user_upload_temp(id_card,title,name,surname,company,password)";
+        sql = "insert into user_upload_temp(number,id_card,title,name,surname,company,password)";
         sql += " values (";
         for column in range(1, ws.max_column + 1):
+            if (column == 3) or (column == 4):
+                continue
             val = ws.cell(row, column).value
             if val is str:
                 val = val.replace('\n', '')
@@ -385,9 +615,11 @@ def nms_writeuserprd():
     ws = wb.active
     print('Total number of rows: ' + str(ws.max_row) + '. And total number of columns: ' + str(ws.max_column))
     for row in range(2, ws.max_row + 1):
-        sql = "insert into user_upload(id_card,title,name,surname,company,password)";
+        sql = "insert into user_upload(number,id_card,title,name,surname,company,password)";
         sql += " values (";
         for column in range(1, ws.max_column + 1):
+            if (column == 3) or (column == 4):
+                continue
             val = ws.cell(row, column).value
             if val is str:
                 val = val.replace('\n', '')
